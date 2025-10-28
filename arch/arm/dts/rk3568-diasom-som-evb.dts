@@ -16,23 +16,15 @@
 		     "rockchip,rk3568";
 
 	aliases {
-		camera0 = &xc7160;
-		camera1 = &imx335_i2c4;
-		camera2 = &imx335_i2c7;
-		camera3 = &fpdlink;
-		camera4 = &imx415_i2c4;
-		camera5 = &imx415_i2c7;
-		can0 = &can1;
-		can1 = &can2;
+		// can0 = &can1;
+		// can1 = &can2;
 		ethernet0 = &gmac0;
 		ethernet1 = &gmac1;
-		i2c6 = &i2c6;
-		i2c7 = &i2c7;
-		i2c8 = &i2c8;
-		i2c9 = &i2c9;
-		i2c10 = &i2c10;
+		// i2c6 = &i2c6;
+		// i2c7 = &i2c7;
+		// i2c8 = &i2c8;
+		// i2c9 = &i2c9;
 		mmc1 = &sdmmc0;
-		sound0 = &sound0;
 	};
 
 	chosen {
@@ -147,38 +139,6 @@
 		};
 	};
 
-	sound0: es8388-sound {
-		compatible = "simple-audio-card";
-		simple-audio-card,name = "ES8388";
-		simple-audio-card,format = "i2s";
-		simple-audio-card,bitclock-master = <&es8388_master>;
-		simple-audio-card,frame-master = <&es8388_master>;
-
-		es8388_master: simple-audio-card,cpu {
-			sound-dai = <&i2s1_8ch>;
-		};
-
-		simple-audio-card,codec {
-			sound-dai = <&es8388>;
-		};
-	};
-
-	usb {
-		pinctrl-names = "default";
-		pinctrl-0 = <&usbmux_pins>;
-		compatible = "genesys,gl9962", "gpio-sbu-mux";
-		enable-gpios = <&gpio3 RK_PA2 GPIO_ACTIVE_HIGH>;
-		select-gpios = <&gpio4 RK_PD2 GPIO_ACTIVE_LOW>;
-		orientation-switch;
-
-		port {
-			/* Orientation Switch */
-			typec_sbu: endpoint {
-				remote-endpoint = <&fusb_sbu>;
-			};
-		};
-	};
-
 	vcc1v8_sys: vcc1v8-sys-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "1v8_sys";
@@ -271,11 +231,11 @@
 };
 
 &can1 {
-	status = "okay";
+	status = "disabled";
 };
 
 &can2 {
-	status = "okay";
+	status = "disabled";
 };
 
 &combphy1 {
@@ -300,42 +260,6 @@
 			reg = <0>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-
-			imx335_i2c4_in: endpoint@0 {
-				reg = <0>;
-				data-lanes = <1 2 3 4>;
-				remote-endpoint = <&imx335_i2c4_out>;
-			};
-
-			imx335_i2c7_in: endpoint@1 {
-				reg = <1>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&imx335_i2c7_out>;
-			};
-
-			imx415_i2c4_in: endpoint@2 {
-				reg = <2>;
-				data-lanes = <1 2 3 4>;
-				remote-endpoint = <&imx415_i2c4_out>;
-			};
-
-			imx415_i2c7_in: endpoint@3 {
-				reg = <3>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&imx415_i2c7_out>;
-			};
-
-			ub954_csi_in: endpoint@4 {
-				reg = <4>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&ub954_csi_out>;
-			};
-
-			xc7160_in: endpoint@5 {
-				reg = <5>;
-				data-lanes = <1 2 3 4>;
-				remote-endpoint = <&xc7160_out>;
-			};
 		};
 
 		port@1 {
@@ -354,13 +278,13 @@
 };
 
 &display_subsystem {
-	status = "okay";
+	status = "disabled";
 };
 
 &dsi0 {
 	#address-cells = <1>;
 	#size-cells = <0>;
-	status = "okay";
+	status = "disabled";
 
 	panel@0 {
 		pinctrl-names = "default";
@@ -382,7 +306,7 @@
 };
 
 &dsi_dphy0 {
-	status = "okay";
+	status = "disabled";
 };
 
 &dsi0_in {
@@ -455,147 +379,36 @@
 	/* FUSB302 is not detected at 1MHz, so lets reduce frequency to 400KHz */
 	clock-frequency = <400000>;
 	status = "okay";
-
-	typec: usb@22 {
-		compatible = "fcs,fusb302";
-		reg = <0x22>;
-		vbus-supply = <&vcc5v0_usb3_otg0>;
-		status = "disabled";
-
-		connector {
-			compatible = "usb-c-connector";
-#ifdef USBOTG_HOST
-			data-role = "host";
-#else
-			data-role = "dual";
-#endif
-			label = "USB-C";
-			pd-disable;
-			power-role = "source";
-			typec-power-opmode = "default";
-
-			ports {
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				port@0 {
-					/* HS */
-					reg = <0>;
-
-					fusb_hs: endpoint {
-						remote-endpoint = <&typec_hs>;
-					};
-				};
-
-				port@1 {
-					/* SS */
-					reg = <1>;
-
-					fusb_ss: endpoint {
-						remote-endpoint = <&typec_ss>;
-					};
-				};
-
-				port@2 {
-					/* Orientation Switch */
-					reg = <2>;
-
-					fusb_sbu: endpoint {
-						remote-endpoint = <&typec_sbu>;
-					};
-				};
-			};
-		};
-
-		port {
-			/* Role Switch */
-			fusb_role_sw: endpoint {
-				remote-endpoint = <&typec_role_sw>;
-			};
-		};
-	};
 };
 
 &i2c4 {
 	clock-frequency = <100000>;
 	status = "okay";
 
-	es8388: codec@10 {
-		compatible = "everest,es8388";
-		assigned-clocks = <&cru I2S1_MCLKOUT_TX>;
-		assigned-clock-rates = <12288000>;
-		assigned-clock-parents = <&cru CLK_I2S1_8CH_TX>;
-		reg = <0x10>;
-		clocks = <&cru I2S1_MCLKOUT_TX>;
-		DVDD-supply = <&vcc1v8_sys>;
-		AVDD-supply = <&vcc3v3_sys>;
-		PVDD-supply = <&vcc3v3_sys>;
-		HPVDD-supply = <&vcc3v3_sys>;
-
-		#sound-dai-cells = <0>;
+	pcf8574: gpio5@20 {
+		compatible = "nxp,pcf8574";
+		reg = <0x20>;
+		gpio-ranges = <&pinctrl 0 160 8>;
+		interrupt-parent = <&irqpin2>;
+		interrupts = <3 0>;
+		gpio-controller;
+		#gpio-cells = <2>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
 	};
 
-	imx335_i2c4: camera-0@1a {
-		compatible = "sony,imx335";
-		reg = <0x1a>;
-		clocks = <&xin24m>;
-		power-domains = <&power RK3568_PD_VI>;
-		avdd-supply = <&vcc_cam0>;
-		dvdd-supply = <&vcc_cam0>;
-		ovdd-supply = <&vcc_cam0>;
-		status = "disabled";
+	pcf85063: rtc@51 {
+		compatible = "nxp,pcf85063";
+		reg = <0x51>;
+		quartz-load-femtofarads = <12500>;
 
-		port {
-			imx335_i2c4_out: endpoint {
-				data-lanes = <1 2 3 4>;
-				remote-endpoint = <&imx335_i2c4_in>;
-				link-frequencies = /bits/ 64 <594000000>;
-			};
+		clock {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <32768>;
 		};
 	};
-
-	imx415_i2c4: camera-1@1a {
-		compatible = "sony,imx415";
-		reg = <0x1a>;
-		clocks = <&clk37m125>;
-		clock-names = "inck";
-		power-domains = <&power RK3568_PD_VI>;
-		avdd-supply = <&vcc_cam0>;
-		dvdd-supply = <&vcc_cam0>;
-		ovdd-supply = <&vcc_cam0>;
-		status = "disabled";
-
-		port {
-			imx415_i2c4_out: endpoint {
-				data-lanes = <1 2 3 4>;
-				remote-endpoint = <&imx415_i2c4_in>;
-				link-frequencies = /bits/ 64 <891000000>;
-			};
-		};
-	};
-
-	xc7160: camera@1b {
-		pinctrl-names = "default";
-		pinctrl-0 = <&cif_clk &csi0_rst>;
-		compatible = "firefly,xc7160";
-		reg = <0x1b>;
-		clocks = <&cru CLK_CIF_OUT>;
-		clock-names = "xvclk";
-		power-domains = <&power RK3568_PD_VI>;
-		reset-gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_HIGH>;
-		avdd-supply = <&vcc5v0_sys>;
-		dovdd-supply = <&vcc5v0_sys>;
-		dvdd-supply = <&vcc5v0_sys>;
-		status = "disabled";
-
-		port {
-			xc7160_out: endpoint {
-				data-lanes = <1 2 3 4>;
-				remote-endpoint = <&xc7160_in>;
-			};
-		};
-	};
-
+/*
 	i2c_mux: i2c-mux@70 {
 		compatible = "nxp,pca9546";
 		reg = <0x70>;
@@ -615,144 +428,6 @@
 			reg = <1>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-
-			imx335_i2c7: camera-0@1a {
-				compatible = "sony,imx335";
-				reg = <0x1a>;
-				clocks = <&xin24m>;
-				power-domains = <&power RK3568_PD_VI>;
-				avdd-supply = <&vcc_cam0>;
-				dvdd-supply = <&vcc_cam0>;
-				ovdd-supply = <&vcc_cam0>;
-				status = "disabled";
-
-				port {
-					imx335_i2c7_out: endpoint {
-						data-lanes = <1 2>;
-						remote-endpoint = <&imx335_i2c7_in>;
-						link-frequencies = /bits/ 64 <594000000>;
-					};
-				};
-			};
-
-			imx415_i2c7: camera-1@1a {
-				compatible = "sony,imx415";
-				reg = <0x1a>;
-				clocks = <&clk37m125>;
-				clock-names = "inck";
-				power-domains = <&power RK3568_PD_VI>;
-				avdd-supply = <&vcc_cam0>;
-				dvdd-supply = <&vcc_cam0>;
-				ovdd-supply = <&vcc_cam0>;
-				status = "disabled";
-
-				port {
-					imx415_i2c7_out: endpoint {
-						data-lanes = <1 2>;
-						remote-endpoint = <&imx415_i2c7_in>;
-						link-frequencies = /bits/ 64 <891000000>;
-					};
-				};
-			};
-
-			fpdlink: deser@30 {
-				compatible = "ti,ds90ub954-q1";
-				reg = <0x30>;
-
-				clocks = <&clk25m>;
-				clock-names = "refclk";
-				i2c-alias-pool = <0x4a 0x4b 0x4c 0x4d>;
-				power-domains = <&power RK3568_PD_VI>;
-				vddio-supply = <&vcc_cam0>;
-				status = "disabled";
-
-				ports {
-					#address-cells = <1>;
-					#size-cells = <0>;
-
-					/* Port 0, FPD Channel 0 RX */
-					port@0 {
-						reg = <0>;
-
-						ub954_0_fpd_in: endpoint {
-							remote-endpoint = <&ub953_fpd_out>;
-						};
-					};
-
-					/* Port 2, CSI-2 TX */
-					port@2 {
-						reg = <2>;
-
-						ub954_csi_out: endpoint {
-							data-lanes = <1 2>;
-							link-frequencies = /bits/ 64 <400000000>;
-							remote-endpoint = <&ub954_csi_in>;
-						};
-					};
-				};
-
-				links {
-					#address-cells = <1>;
-					#size-cells = <0>;
-
-					/* Link 0, DS90UB953 serializer and AR0233 sensor */
-					link@0 {
-						reg = <0>;
-						i2c-alias = <0x18>;
-						ti,rx-mode = <3>;
-
-						ser0: serializer {
-							compatible = "ti,ds90ub953-q1";
-							gpio-controller;
-							#gpio-cells = <2>;
-
-							ports {
-								#address-cells = <1>;
-								#size-cells = <0>;
-
-								/* Port 0, CSI-2 RX */
-								port@0 {
-									reg = <0>;
-
-									ub953_csi_in: endpoint {
-										data-lanes = <1 2>;
-										remote-endpoint = <&ar0233_out>;
-									};
-								};
-
-								/* Port 1, FPD TX */
-								port@1 {
-									reg = <1>;
-
-									ub953_fpd_out: endpoint {
-										remote-endpoint = <&ub954_0_fpd_in>;
-									};
-								};
-							};
-
-							i2c10: i2c {
-								#address-cells = <1>;
-								#size-cells = <0>;
-
-								camera@10 {
-									compatible = "onnn,ar0233";
-									reg = <0x10>;
-									clocks = <&clk27m>;
-									reset-gpios = <&ser0 0 GPIO_ACTIVE_LOW>;
-
-									port {
-										ar0233_out: endpoint {
-											data-lanes = <1 2>;
-											link-frequencies = /bits/ 64 <375000000>;
-											remote-endpoint = <&ub953_csi_in>;
-										};
-									};
-								};
-							};
-						};
-					};
-				};
-			};
 		};
 
 		i2c8: i2c@2 {
@@ -767,11 +442,12 @@
 			#size-cells = <0>;
 		};
 	};
+*/
 };
 
 &i2s0_8ch {
 	/* HDMI Sound */
-	status = "okay";
+	status = "disabled";
 };
 
 &i2s1_8ch {
@@ -782,19 +458,19 @@
 		&i2s1m1_sdi0		/* I2S1_SDI0 */
 	>;
 	rockchip,trcm-sync-tx-only;
-	status = "okay";
+	status = "disabled";
 };
 
 &isp {
-	status = "okay";
+	status = "disabled";
 };
 
 &isp_mmu {
-	status = "okay";
+	status = "disabled";
 };
 
 &isp_vir0 {
-	status = "okay";
+	status = "disabled";
 
 	port {
 		#address-cells = <1>;
@@ -838,13 +514,13 @@
 	pinctrl-0 = <&pcie20_pins>;
 	reset-gpios = <&gpio1 RK_PB1 GPIO_ACTIVE_HIGH>;
 	vpcie3v3-supply = <&vcc3v3_pcie20>;
-	status = "okay";
+	status = "disabled";
 };
 
 &pcie30phy {
 	data-lanes = <1 1>;
 	phy-supply = <&vcc3v3_pi6c>;
-	status = "okay";
+	status = "disabled";
 };
 
 &pcie3x2 {
@@ -852,7 +528,7 @@
 	pinctrl-0 = <&pcie30_pins>;
 	reset-gpios = <&gpio4 RK_PC4 GPIO_ACTIVE_HIGH>;
 	vpcie3v3-supply = <&vcc3v3_pi6c>;
-	status = "okay";
+	status = "disabled";
 };
 
 &pwm5 {
@@ -900,66 +576,52 @@
 	};
 };
 
+// Slot-2
 &uart3 {
-	pinctrl-0 = <&uart3m1_xfer &uart3m0_ctsn &uart3m0_rtsn>;
+	pinctrl-0 = <&uart3m1_xfer &uart3m0_ctsn>;
 	status = "okay";
 };
 
+// Slot-5 485-1
 &uart7 {
 	pinctrl-0 = <&uart7m1_xfer &uart7m0_ctsn &uart7m0_rtsn>;
+	linux,rs485-enabled-at-boot-time;
+	rs485-rts-active-low;
+	uart-has-rtscts;
 	status = "okay";
 };
 
+// Slot-6 485-2
 &uart8 {
 	pinctrl-0 = <&uart8m0_xfer &uart8m0_ctsn &uart8m0_rtsn>;
+	linux,rs485-enabled-at-boot-time;
+	rs485-rts-active-low;
+	uart-has-rtscts;
 	status = "okay";
 };
 
+// Slot-3
 &uart9 {
 	pinctrl-0 = <&uart9m1_xfer>;
 	status = "okay";
 };
 
-&usb_host0_xhci {
-#ifdef USBOTG_HOST
-	dr_mode = "host";
-#else
-	usb-role-switch;
-#endif
-
-	port {
-		/* Role Switch */
-		typec_role_sw: endpoint {
-			remote-endpoint = <&fusb_role_sw>;
-		};
-	};
-
-	ports {
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		port@0 {
-			/* HS */
-			reg = <0>;
-
-			typec_hs: endpoint {
-				remote-endpoint = <&fusb_hs>;
-			};
-		};
-
-		port@1 {
-			/* SS */
-			reg = <1>;
-
-			typec_ss: endpoint {
-				remote-endpoint = <&fusb_ss>;
-			};
-		};
+// Bluetooth
+&uart4 {
+	pinctrl-0 = <&uart4m0_xfer>;
+	status = "okay";
+	bluetooth {
+		compatible = "realtek,rtl8821cs-bt", "realtek,rtl8723bs-bt";
+		/*
+		device-wake-gpios = <&pio 6 17 GPIO_ACTIVE_HIGH>;
+		enable-gpios = <&pio 6 19 GPIO_ACTIVE_HIGH>;
+		host-wake-gpios = <&pio 6 16 GPIO_ACTIVE_HIGH>;
+		*/
 	};
 };
 
 &usb_host1_ehci {
-	status = "okay";
+	status = "disabled";
 };
 
 &usb_host1_ohci {
@@ -967,12 +629,12 @@
 };
 
 &usb_host1_xhci {
-	status = "okay";
+	status = "disabled";
 };
 
 &usb2phy0_host {
 	phy-supply = <&vcc5v0_usb3_host1>;
-	status = "okay";
+	status = "disabled";
 };
 
 &usb2phy1_host {
@@ -1035,8 +697,8 @@
 			rockchip,pins =
 				<1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>,		/* GPIO_1 */
 				<1 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>,		/* GPIO_2 */
-				<1 RK_PA7 RK_FUNC_GPIO &pcfg_pull_up>,		/* GPIO_3 */
-				<1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;		/* GPIO_4 */
+				<1 RK_PA7 RK_FUNC_GPIO &pcfg_pull_up>;		/* GPIO_3 */
+				// <1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;		/* GPIO_4 */ // TODO:
 		};
 	};
 
@@ -1126,3 +788,40 @@
 		};
 	};
 };
+
+&gpio4 {
+	compatible = "rockchip,gpio-bank";
+	reg = <0x0 0xfe770000 0x0 0x100>;
+	interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+	clocks = <&cru PCLK_GPIO4>, <&cru DBCLK_GPIO4>;
+	gpio-controller;
+	gpio-ranges = <&pinctrl 0 128 32>;
+	#gpio-cells = <2>;
+	interrupt-controller;
+	#interrupt-cells = <2>;
+	line_en-buff {
+		gpio-hog;
+		gpios = <20 2>;	// line number in gpio port (not global)
+		output-high;
+		line-name = "en-buffer";
+	};
+};
+
+&gpio1 {
+	compatible = "rockchip,gpio-bank";
+	reg = <0x0 0xfe740000 0x0 0x100>;
+	interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
+	clocks = <&cru PCLK_GPIO1>, <&cru DBCLK_GPIO1>;
+	gpio-controller;
+	gpio-ranges = <&pinctrl 0 32 32>;
+	#gpio-cells = <2>;
+	interrupt-controller;
+	#interrupt-cells = <2>;
+	line_pps {
+		gpio-hog;
+		gpios = <9 2>;	// line number in gpio port (not global)
+		output-high;
+		line-name = "pps-out";
+	};
+};
+
