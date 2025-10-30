@@ -645,7 +645,7 @@
 	// 	};
 	// };
 
-	pcf8574_irq {
+	pcf8574a_irq {
 		irqpin2: irqpin2 {
 			rockchip,pins =
 				<2 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;	/* PCF8574 IRQ */

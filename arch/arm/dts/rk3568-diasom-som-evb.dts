@@ -16,15 +16,11 @@
 		     "rockchip,rk3568";
 
 	aliases {
-		// can0 = &can1;
-		// can1 = &can2;
 		ethernet0 = &gmac0;
 		ethernet1 = &gmac1;
-		// i2c6 = &i2c6;
-		// i2c7 = &i2c7;
-		// i2c8 = &i2c8;
-		// i2c9 = &i2c9;
 		mmc1 = &sdmmc0;
+		gpio5 = &pcf8574a;
+		rtc1 = &pcf85063;
 	};
 
 	chosen {
@@ -215,7 +211,7 @@
 		/* Used by RAW probe for cameras connected via I2C */
 		regulator-boot-on;
 		enable-active-high;
-		gpio = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
+		// gpio = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
 		regulator-name = "vcc_cam0";
 		startup-delay-us = <250000>;
 		status = "disabled";
@@ -385,9 +381,9 @@
 	clock-frequency = <100000>;
 	status = "okay";
 
-	pcf8574: gpio5@20 {
-		compatible = "nxp,pcf8574";
-		reg = <0x20>;
+	pcf8574a: gpio5@38 {
+		compatible = "nxp,pcf8574a";
+		reg = <0x38>;
 		gpio-ranges = <&pinctrl 0 160 8>;
 		interrupt-parent = <&irqpin2>;
 		interrupts = <3 0>;
@@ -395,6 +391,15 @@
 		#gpio-cells = <2>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
+		gpio-line-names =
+			"DI-1",
+			"DI-2",
+			"DI-3",
+			"DI-4",
+			"CAP good",
+			"PWR good",
+			"PWR fault",
+			"CAP fault";
 	};
 
 	pcf85063: rtc@51 {
@@ -408,41 +413,6 @@
 			clock-frequency = <32768>;
 		};
 	};
-/*
-	i2c_mux: i2c-mux@70 {
-		compatible = "nxp,pca9546";
-		reg = <0x70>;
-		i2c-mux-idle-disconnect;
-		vdd-supply = <&vcc3v3_sys>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-		status = "disabled";
-
-		i2c6: i2c@0 {
-			reg = <0>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-		};
-
-		i2c7: i2c@1 {
-			reg = <1>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-		};
-
-		i2c8: i2c@2 {
-			reg = <2>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-		};
-
-		i2c9: i2c@3 {
-			reg = <3>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-		};
-	};
-*/
 };
 
 &i2s0_8ch {

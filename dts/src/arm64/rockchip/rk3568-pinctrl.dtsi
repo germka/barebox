@@ -877,9 +877,9 @@
 		i2c4m0_xfer: i2c4m0-xfer {
 			rockchip,pins =
 				/* i2c4_sclm0 */
-				<4 RK_PB3 1 &pcfg_pull_none_smt>,
+				<4 RK_PB3 1 &pcfg_pull_up_drv_level_2>,
 				/* i2c4_sdam0 */
-				<4 RK_PB2 1 &pcfg_pull_none_smt>;
+				<4 RK_PB2 1 &pcfg_pull_up_drv_level_2>;
 		};
 
 		/omit-if-no-ref/
