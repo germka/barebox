@@ -402,7 +402,7 @@
 			"CAP fault";
 	};
 
-	pcf85063: rtc@51 {
+	pcf85063: rtc@50 {
 		compatible = "nxp,pcf85063";
 		reg = <0x51>;
 		quartz-load-femtofarads = <12500>;
@@ -502,7 +502,7 @@
 };
 
 &pwm5 {
-	status = "okay";
+	status = "disabled";
 };
 
 &rga {
@@ -790,7 +790,7 @@
 	line_pps {
 		gpio-hog;
 		gpios = <9 2>;	// line number in gpio port (not global)
-		output-high;
+		// output-high;
 		line-name = "pps-out";
 	};
 };
