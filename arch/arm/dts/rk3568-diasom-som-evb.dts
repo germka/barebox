@@ -156,7 +156,7 @@
 &combphy2 {
 	/* PCI-E 2.0 */
 	phy-supply = <&vcc3v3_pcie20>;
-	status = "okay";
+	status = "disabled";
 };
 
 &csi2_dphy0 {
@@ -228,7 +228,7 @@
 &i2c1 {
 	/* FUSB302 is not detected at 1MHz, so lets reduce frequency to 400KHz */
 	clock-frequency = <400000>;
-	status = "okay";
+	status = "disabled";
 };
 
 &i2c4 {
@@ -382,7 +382,7 @@
 &spi1 {
 	pinctrl-0 = <&spi1m1_pins_hs &spi1m1_cs0_hs>;
 	num-cs = <1>;
-	status = "okay";
+	status = "disabled";
 
 	spi@0 {
 		compatible = "rohm,dh2228fv";
@@ -393,7 +393,7 @@
 &spi2 {
 	pinctrl-0 = <&spi2m1_pins_hs &spi2m1_cs0_hs &spi2m1_cs1_hs>;
 	num-cs = <2>;
-	status = "okay";
+	status = "disabled";
 
 	spi@0 {
 		compatible = "rohm,dh2228fv";
@@ -472,27 +472,27 @@
 };
 
 &vpu {
-	status = "okay";
+	status = "disabled";
 };
 
 &vdpu_mmu {
-	status = "okay";
+	status = "disabled";
 };
 
 &vepu {
-	status = "okay";
+	status = "disabled";
 };
 
 &vepu_mmu {
-	status = "okay";
+	status = "disabled";
 };
 
 &vop {
-	status = "okay";
+	status = "disabled";
 };
 
 &vop_mmu {
-	status = "okay";
+	status = "disabled";
 };
 
 &pinctrl {
@@ -502,10 +502,7 @@
 	board {
 		board_pins: board-pins {
 			rockchip,pins =
-				<1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>,		/* GPIO_1 */
-				<1 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>,		/* GPIO_2 */
 				<1 RK_PA7 RK_FUNC_GPIO &pcfg_pull_up>;		/* GPIO_3 */
-				// <1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;		/* GPIO_4 */ // TODO:
 		};
 	};
 
