@@ -49,92 +49,6 @@
 		#clock-cells = <0>;
 	};
 
-	backlight: backlight {
-		compatible = "pwm-backlight";
-		pwms = <&pwm5 0 25000 0>;
-		brightness-levels = <0 255>;
-		num-interpolated-steps = <256>;
-		default-brightness-level = <255>;
-	};
-
-	hdmi-connector {
-		compatible = "hdmi-connector";
-		label = "HDMI";
-		type = "a";
-
-		port {
-			hdmi_connector_in: endpoint {
-				remote-endpoint = <&hdmi_connector_out>;
-			};
-		};
-	};
-
-	lvds: lvds {
-		compatible = "rockchip,rk3568-lvds";
-		phys = <&dsi_dphy0>;
-		phy-names = "dphy";
-		power-domains = <&power RK3568_PD_VO>;
-		rockchip,grf = <&grf>;
-		rockchip,output = "lvds";
-		status = "disabled";
-
-		ports {
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			port@0 {
-				reg = <0>;
-
-				lvds_in_vp2: endpoint {
-					remote-endpoint = <&vp2_out_lvds>;
-				};
-			};
-
-			port@1 {
-				reg = <1>;
-
-				lvds_out_panel: endpoint {
-					remote-endpoint = <&lvds_in_panel>;
-				};
-			};
-		};
-	};
-
-	lvds_panel: panel {
-		pinctrl-names = "default";
-		pinctrl-0 = <&lvds_pins>;
-		compatible = "panel-lvds";
-		backlight = <&backlight>;
-		data-mapping = "jeida-24";
-		enable-gpios = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
-		width-mm = <210>;
-		height-mm = <158>;
-		status = "disabled";
-
-		panel-timing {
-			/* Raystar RFM1040G-AWW-LNN 1024x768@60 */
-			clock-frequency = <65000000>;
-			hactive = <1024>;
-			vactive = <768>;
-			hsync-len = <4>;
-			hfront-porch = <100>;
-			hback-porch = <216>;
-			vfront-porch = <30>;
-			vback-porch = <7>;
-			vsync-len = <1>;
-			hsync-active = <0>;
-			vsync-active = <0>;
-			de-active = <0>;
-			pixelclk-active = <0>;
-		};
-
-		port {
-			lvds_in_panel: endpoint {
-				remote-endpoint = <&lvds_out_panel>;
-			};
-		};
-	};
-
 	vcc1v8_sys: vcc1v8-sys-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "1v8_sys";
@@ -277,46 +191,6 @@
 	status = "disabled";
 };
 
-&dsi0 {
-	#address-cells = <1>;
-	#size-cells = <0>;
-	status = "disabled";
-
-	panel@0 {
-		pinctrl-names = "default";
-		pinctrl-0 = <&dsi_pins>;
-		compatible = "raystar,display-rfh1010j-ayh";
-		reg = <0>;
-		backlight = <&backlight>;
-		reset-gpios = <&gpio0 RK_PB6 GPIO_ACTIVE_HIGH>;
-		enable-gpios = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
-		vdd-supply = <&vcc3v3_sys>;
-		vccio-supply = <&vcc1v8_sys>;
-
-		port {
-			dsi_in_panel: endpoint {
-				remote-endpoint = <&dsi_out_panel>;
-			};
-		};
-	};
-};
-
-&dsi_dphy0 {
-	status = "disabled";
-};
-
-&dsi0_in {
-	dsi0_in_vp1: endpoint {
-		remote-endpoint = <&vp1_out_dsi0>;
-	};
-};
-
-&dsi0_out {
-	dsi_out_panel: endpoint {
-		remote-endpoint = <&dsi_in_panel>;
-	};
-};
-
 &gmac0 {
 	assigned-clocks = <&cru SCLK_GMAC0_RX_TX>, <&cru SCLK_GMAC0>;
 	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED>;
@@ -351,26 +225,6 @@
 	status = "okay";
 };
 
-&hdmi {
-	status = "okay";
-};
-
-&hdmi_in {
-	hdmi_in_vp0: endpoint {
-		remote-endpoint = <&vp0_out_hdmi>;
-	};
-};
-
-&hdmi_out {
-	hdmi_connector_out: endpoint {
-		remote-endpoint = <&hdmi_connector_in>;
-	};
-};
-
-&hdmi_sound {
-	status = "okay";
-};
-
 &i2c1 {
 	/* FUSB302 is not detected at 1MHz, so lets reduce frequency to 400KHz */
 	clock-frequency = <400000>;
@@ -402,9 +256,9 @@
 			"CAP fault";
 	};
 
-	pcf85063: rtc@50 {
+	pcf85063: rtc@32 {
 		compatible = "nxp,pcf85063";
-		reg = <0x51>;
+		reg = <0x32>;
 		quartz-load-femtofarads = <12500>;
 
 		clock {
@@ -635,29 +489,6 @@
 	status = "okay";
 };
 
-&vp0 {
-	vp0_out_hdmi: endpoint@ROCKCHIP_VOP2_EP_HDMI0 {
-		reg = <ROCKCHIP_VOP2_EP_HDMI0>;
-		remote-endpoint = <&hdmi_in_vp0>;
-	};
-};
-
-&vp1 {
-	vp1_out_dsi0: endpoint@ROCKCHIP_VOP2_EP_MIPI0 {
-		reg = <ROCKCHIP_VOP2_EP_MIPI0>;
-		remote-endpoint = <&dsi0_in_vp1>;
-	};
-};
-
-&vp2 {
-	status = "disabled";
-
-	vp2_out_lvds: endpoint@ROCKCHIP_VOP2_EP_LVDS0 {
-		reg = <ROCKCHIP_VOP2_EP_LVDS0>;
-		remote-endpoint = <&lvds_in_vp2>;
-	};
-};
-
 &pinctrl {
 	pinctrl-names = "default";
 	pinctrl-0 = <&board_pins>;
@@ -787,11 +618,14 @@
 	#gpio-cells = <2>;
 	interrupt-controller;
 	#interrupt-cells = <2>;
+	gpio-line-names = "","","","","","","","","","pps-out","","","","","","","","","","","","","","","","","","","","","","";
+	/*
 	line_pps {
 		gpio-hog;
 		gpios = <9 2>;	// line number in gpio port (not global)
-		// output-high;
+		output-high;
 		line-name = "pps-out";
 	};
+	 */
 };
 
