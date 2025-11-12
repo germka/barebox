@@ -228,7 +228,7 @@
 
 &combphy0 {
 	/* USB3.0 OTG0 */
-	status = "okay";
+	status = "disabled";
 };
 
 &cpu0_opp_table {
@@ -540,23 +540,20 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&sdmmc2m0_bus4 &sdmmc2m0_clk &sdmmc2m0_cmd>;
 	vmmc-supply = <&vcc3v3_sys>;
+	vqmmc-supply = <&vcc_1v8>;
 	non-removable;
-	cap-power-off-card;
 	keep-power-in-suspend;
 	bus-width = <4>;
 	#address-cells = <1>;
 	#size-cells = <0>;
 	status = "okay";
+	// broken-cd;
+	no-mmc;
+	no-sd;
 
-	sdio_wifi: wifi@1 {
-		compatible = "realtek,rtl8821cs";
-		reg = <1>;
-		/*
-		interrupt-parent = <&pio>;
-		interrupts = <6 15 IRQ_TYPE_LEVEL_LOW>;
-		interrupt-names = "host-wake";
-		*/
-	};
+    wifi: rtl8821cs@1 {
+        reg = <1>;
+    };
 };
 
 &tsadc {
@@ -605,6 +602,7 @@
 	/* properties until we have regulator handling for dsi & lvds nodes */
 	regulator-always-on;
 	regulator-boot-on;
+	status = "disabled";
 };
 
 &vcca1v8_image {
@@ -612,6 +610,7 @@
 	/* properties until we have regulator handling for dsi & lvds nodes */
 	regulator-always-on;
 	regulator-boot-on;
+	status = "disabled";
 };
 
 &vpu {
@@ -633,6 +632,7 @@
 &vop {
 	assigned-clocks = <&cru DCLK_VOP0>, <&cru DCLK_VOP1>;
 	assigned-clock-parents = <&pmucru PLL_HPLL>, <&cru PLL_VPLL>;
+	status = "disabled";
 };
 
 &pinctrl {

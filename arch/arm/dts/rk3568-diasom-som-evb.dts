@@ -85,11 +85,11 @@
 
 	vcc3v3_pi6c: vcc3v3-pi6c-regulator {
 		pinctrl-names = "default";
-		pinctrl-0 = <&pcie30_oe_pins>;
+		// pinctrl-0 = <&pcie30_oe_pins>;
 		compatible = "regulator-fixed";
 		/* Fixup for PCI-e in the bootloader */
 		regulator-boot-on;
-		gpio = <&gpio3 RK_PD4 GPIO_ACTIVE_LOW>;
+		// gpio = <&gpio3 RK_PD4 GPIO_ACTIVE_LOW>;
 		regulator-name = "3v3_pi6c";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
@@ -160,7 +160,7 @@
 };
 
 &csi2_dphy0 {
-	status = "okay";
+	status = "disabled";
 
 	ports {
 		#address-cells = <1>;
@@ -350,7 +350,7 @@
 };
 
 &rga {
-	status = "okay";
+	status = "disabled";
 };
 
 &sdmmc0 {
@@ -426,11 +426,6 @@
 	status = "okay";
 	bluetooth {
 		compatible = "realtek,rtl8821cs-bt", "realtek,rtl8723bs-bt";
-		/*
-		device-wake-gpios = <&pio 6 17 GPIO_ACTIVE_HIGH>;
-		enable-gpios = <&pio 6 19 GPIO_ACTIVE_HIGH>;
-		host-wake-gpios = <&pio 6 16 GPIO_ACTIVE_HIGH>;
-		*/
 	};
 };
 
@@ -548,10 +543,10 @@
 				<4 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;		/* PCIE30X2_PERSTn_M2 */
 		};
 
-		pcie30_oe_pins: pcie30-oe-pins {
-			rockchip,pins =
-				<3 RK_PD4 RK_FUNC_GPIO &pcfg_pull_up>;		/* PCIECLKIC_OE */
-		};
+		// pcie30_oe_pins: pcie30-oe-pins {
+		// 	rockchip,pins =
+		// 		<3 RK_PD4 RK_FUNC_GPIO &pcfg_pull_up>;		/* PCIECLKIC_OE */
+		// };
 
 		pcie30_pwr_pins: pcie30-pwr-pins {
 			rockchip,pins =
@@ -605,6 +600,13 @@
 		line-name = "pps-out";
 	};
 	 */
+	 
+	wl-enable {
+		gpio-hog;
+		gpios = <5 2>;	// line number in gpio port (not global)
+		output-high;
+		line-name = "wl-enable";
+	};
 };
 
 &gpio2 {
@@ -618,4 +620,11 @@
 	interrupt-controller;
 	#interrupt-cells = <2>;
 	gpio-line-names = "","","","","","","","","","","","","","","","","","","","","","","","","","","","","bt-enable","","","";
+
+	bt-enable {
+		gpio-hog;
+		gpios = <28 2>;	// line number in gpio port (not global)
+		output-high;
+		line-name = "br-enable";
+	};
 };
