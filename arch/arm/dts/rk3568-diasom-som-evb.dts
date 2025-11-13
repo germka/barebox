@@ -95,6 +95,7 @@
 		regulator-max-microvolt = <3300000>;
 		startup-delay-us = <20000>;
 		vin-supply = <&vcc3v3_pcie30>;
+		status = "disabled";
 	};
 
 	vcc5v0_usb3_host1: vcc5v0-usb3-host1-regulator {
