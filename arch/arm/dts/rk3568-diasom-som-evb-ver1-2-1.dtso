@@ -9,22 +9,23 @@
 #include <dt-bindings/pinctrl/rockchip.h>
 
 &gmac0 {
-	nvmem-cells = <&mac0>;
-	nvmem-cell-names = "mac-address";
+	// nvmem-cells = <&mac0>;
+	// nvmem-cell-names = "mac-address";
 	status = "okay";
 };
 
 &gmac1 {
-	nvmem-cells = <&mac1>;
-	nvmem-cell-names = "mac-address";
+	// nvmem-cells = <&mac1>;
+	// nvmem-cell-names = "mac-address";
 	status = "okay";
 };
 
-&i2c4 {
-	#address-cells = <1>;
-	#size-cells = <0>;
+// &i2c4 {
+// 	#address-cells = <1>;
+// 	#size-cells = <0>;
 
 	/* 24aa025e48 */
+/*
 	eeprom@50 {
 		compatible = "atmel,24c02";
 		reg = <0x50>;
@@ -42,8 +43,9 @@
 			};
 		};
 	};
-
+ */
 	/* 24aa025e48 */
+/*
 	eeprom@51 {
 		compatible = "atmel,24c02";
 		reg = <0x51>;
@@ -61,8 +63,9 @@
 			};
 		};
 	};
-};
-
+*/
+// };
+/*
 &vcc_cam0 {
 	regulator-min-microvolt = <5000000>;
 	regulator-max-microvolt = <5000000>;
@@ -109,7 +112,7 @@
 	enable-active-high;
 	status = "okay";
 };
-
+ */
 &pinctrl {
 	csi {
 		csi1_pwr: csi1-pwr-pins {

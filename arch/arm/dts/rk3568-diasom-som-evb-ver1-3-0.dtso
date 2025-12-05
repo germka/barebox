@@ -15,11 +15,12 @@
 &gmac1 {
 	status = "okay";
 };
-
+/*
 &i2c_mux {
 	status = "okay";
 };
-
+ */
+/*
 &typec {
 	pinctrl-names = "default";
 	pinctrl-0 = <&fusb302_pins>;
@@ -65,7 +66,7 @@
 	gpio = <&gpio1 RK_PA5 GPIO_ACTIVE_LOW>;
 	status = "okay";
 };
-
+ */
 &pinctrl {
 	csi {
 		csi1_pwr: csi1-pwr-pins {
