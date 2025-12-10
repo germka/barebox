@@ -235,6 +235,7 @@
 &i2c4 {
 	clock-frequency = <100000>;
 	status = "okay";
+	multi-master;
 
 	pcf8574a: gpio5@38 {
 		compatible = "nxp,pcf8574a";
