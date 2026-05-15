@@ -392,6 +392,12 @@
 	};
 };
 
+// Slot-1
+&uart5 {
+	pinctrl-0 = <&uart5m0_xfer>;
+	status = "okay";
+};
+
 // Slot-2
 &uart3 {
 	pinctrl-0 = <&uart3m1_xfer &uart3m0_ctsn>;
@@ -422,13 +428,13 @@
 	status = "okay";
 };
 
-// Bluetooth
+// Slot-4	// TODO: Fix levels
 &uart4 {
 	pinctrl-0 = <&uart4m0_xfer>;
 	status = "okay";
-	bluetooth {
-		compatible = "realtek,rtl8821cs-bt", "realtek,rtl8723bs-bt";
-	};
+	// bluetooth {
+	// 	compatible = "realtek,rtl8821cs-bt", "realtek,rtl8723bs-bt";
+	// };
 };
 
 &usb_host1_ehci {
@@ -621,12 +627,18 @@
 	#gpio-cells = <2>;
 	interrupt-controller;
 	#interrupt-cells = <2>;
-	gpio-line-names = "","","","","","","","","","","","","","","","","","","","","","","","","","","","","bt-enable","","","";
+	gpio-line-names = "","","","","","","","","","","","","","","","","","","","","","","","","","","","","bt-enable","buff-enable","","";
 
 	bt-enable {
 		gpio-hog;
 		gpios = <28 2>;	// line number in gpio port (not global)
 		output-high;
-		line-name = "br-enable";
+		line-name = "bt-enable";
+	};
+	buff-enable {
+		gpio-hog;
+		gpios = <29 2>;	// line number in gpio port (not global)
+		output-high;
+		line-name = "buff-enable";
 	};
 };
