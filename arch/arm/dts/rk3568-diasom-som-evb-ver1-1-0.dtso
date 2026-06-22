@@ -66,6 +66,7 @@
 	status = "okay";
 };
 */
+
 &pinctrl {
 	// csi {
 	// 	csi1_pwr: csi1-pwr-pins {
