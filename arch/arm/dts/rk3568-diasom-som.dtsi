@@ -125,14 +125,14 @@
 			linux,default-trigger = LED_FUNCTION_ACTIVITY;
 			default-state = "off";
 		};
-
-		som-led-1 {
-			label = "led:1";
-			gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
-			function = LED_FUNCTION_HEARTBEAT;
-			default-state = "on";
-		};
+		// Конфликт с питанием USB
+		// som-led-1 {
+		// 	label = "led:1";
+		// 	gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
+		// 	linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+		// 	function = LED_FUNCTION_HEARTBEAT;
+		// 	default-state = "on";
+		// };
 
 		som-led-2 {
 			label = "led:2";
@@ -181,7 +181,7 @@
 			function = LED_FUNCTION_HEARTBEAT;
 			default-state = "on";
 		};
-
+/*		Занимает пин включения USB модема (почему?)
 		som-led-8 {
 			label = "led:8";
 			gpios = <&gpio0 RK_PB3 GPIO_ACTIVE_HIGH>;
@@ -189,6 +189,7 @@
 			function = LED_FUNCTION_HEARTBEAT;
 			default-state = "on";
 		};
+ */
 	};
 /*
 	pps {
@@ -568,14 +569,22 @@
 };
 
 &usb_host0_ehci {
+	dr_mode = "host";
+	hnp-disable;
+	srp-disable;
 	status = "okay";
 };
 
 &usb_host0_ohci {
+	dr_mode = "host";
+	hnp-disable;
+	srp-disable;
 	status = "okay";
 };
 
 &usb_host0_xhci {
+	dr_mode = "host";
+	/delete-property/ extcon;
 	hnp-disable;
 	srp-disable;
 	status = "okay";
@@ -641,14 +650,14 @@
 			rockchip,pins =
 				<0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED1 */
 				<0 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED2 */
-				<1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 1*/
+				// <1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 1*/
 				<0 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 2*/
 				<0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 3*/
 				<0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 4*/
 				<4 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 5*/
 				<1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 6*/
-				<3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 7*/
-				<0 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;	/* LED 8*/
+				<3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;	/* LED 7*/
+				// <0 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;	/* LED 8*/
 		};
 	};
 

@@ -106,7 +106,8 @@
 		regulator-max-microvolt = <5000000>;
 		startup-delay-us = <20000>;
 		vin-supply = <&vcc5v0_sys>;
-		status = "disabled";
+		regulator-always-on;
+		status = "okay";
 	};
 
 	vcc5v0_usb3_otg0: vcc5v0-usb3-otg0-regulator {
@@ -116,7 +117,8 @@
 		regulator-max-microvolt = <5000000>;
 		startup-delay-us = <20000>;
 		vin-supply = <&vcc5v0_sys>;
-		status = "disabled";
+		regulator-always-on;
+		status = "okay";
 	};
 
 	vcc_cam0: vcc-cam0-regulator {
@@ -141,16 +143,101 @@
 	};
 };
 
+/* Привязка питания к первому физическому блоку PHY (USB Host 0 / OTG) */
+&usb2phy0 {
+	/* Указываем PHY-контроллеру, какой регулятор отвечает за его логику */
+	phy-supply = <&vcc5v0_usb3_otg0>;
+	status = "okay";
+};
+
+&usb2phy0_host {
+	status = "okay";
+};
+
+&usb2phy0_otg {
+	/* КРИТИЧЕСКИ ВАЖНО: Игнорировать отсутствие питания от хоста, */
+	/* так как подключено устройство с внешним питанием */
+	rockchip,vbus-always-on;
+	status = "okay";
+};
+
+/* Привязка питания ко второму физическому блоку PHY (USB Host 1) */
+&usb2phy1 {
+	/* Указываем PHY-контроллеру регулятор для второго порта */
+	phy-supply = <&vcc5v0_usb3_host1>;
+	status = "okay";
+};
+
+&usb2phy1_host {
+	/* Принудительный Host-режим детекции для второго порта */
+	rockchip,vbus-always-on;
+	status = "okay";
+};
+
+&usb2phy1_otg {
+	// rockchip,vbus-always-on;
+	status = "disabled";
+};
+
+/* Настройка USB Host 0 (Контроллер DWC3 по адресу fcc00000) */
+&usb_host0_xhci {
+	dr_mode = "host";
+	phy_type = "utmi_wide";
+	/delete-property/ extcon;
+	hnp-disable;
+	srp-disable;
+	status = "okay";
+	
+	/* Host 0 (OTG-контроллер) использует otg-порт первого PHY */
+	phys = <&usb2phy0_otg>;
+	phy-names = "usb2-phy";
+};
+
+&usb_host0_ehci {
+	dr_mode = "host";
+	status = "okay";
+};
+
+&usb_host0_ohci {
+	dr_mode = "host";
+	status = "okay";
+};
+
+/* Настройка USB Host 1 (Контроллер DWC3 по адресу fd000000) */
+&usb_host1_xhci {
+	dr_mode = "host";
+	phy_type = "utmi_wide";
+	/delete-property/ extcon;
+	hnp-disable;
+	srp-disable;
+	status = "okay";
+	
+	/* ИСПРАВЛЕНО: Ссылаемся на usb2phy1_host вместо otg */
+	/* ТАКЖЕ ДОБАВЛЕНО: Привязка combphy1 для поддержки USB 3.0 хаба */
+	phys = <&usb2phy1_host>, <&combphy1 PHY_TYPE_USB3>;
+	phy-names = "usb2-phy", "usb3-phy";
+};
+
+&usb_host1_ehci {
+	dr_mode = "host";
+	status = "okay";
+};
+
+&usb_host1_ohci {
+	dr_mode = "host";
+	status = "okay";
+};
+
+&combphy1 {
+	/* USB3.0 HOST1 */
+	status = "okay";
+};
+
 &can1 {
 	status = "disabled";
 };
 
 &can2 {
-	status = "disabled";
-};
-
-&combphy1 {
-	/* USB3.0 HOST1 */
 	status = "disabled";
 };
 
@@ -402,7 +489,7 @@
 // Slot-2
 &uart3 {
 	/delete-property/ dmas;
-	pinctrl-0 = <&uart3m1_xfer &uart3m0_ctsn>;
+	pinctrl-0 = <&uart3m1_xfer>;
 	status = "okay";
 };
 
@@ -595,6 +682,17 @@
 	};
 };
 
+&gpio0 {
+	gpio-line-names = "","","","","","","","","","","","mdm-enable","","","","","","","","","","","","","","","","","","","","";
+	 
+	// mdm-enable {
+	// 	gpio-hog;
+	// 	gpios = <11 2>;	// line number in gpio port (not global)
+	// 	output-low;
+	// 	line-name = "mdm-enable";
+	// };
+};
+
 &gpio1 {
 	compatible = "rockchip,gpio-bank";
 	reg = <0x0 0xfe740000 0x0 0x100>;
@@ -605,7 +703,7 @@
 	#gpio-cells = <2>;
 	interrupt-controller;
 	#interrupt-cells = <2>;
-	gpio-line-names = "","","","","","wl-enable","","","","pps-out","","","","","","","","","","","","","","","","","","","","","","";
+	gpio-line-names = "","","","mdm-reset","","wl-enable","","","","pps-out","","","","","","","","","","","","","","","","","","","","","","";
 	/*
 	line_pps {
 		gpio-hog;
@@ -615,6 +713,13 @@
 	};
 	 */
 	 
+	// mdm-reset {
+	// 	gpio-hog;
+	// 	gpios = <3 2>;	// line number in gpio port (not global)
+	// 	output-low;
+	// 	line-name = "mdm-reset";
+	// };
+
 	wl-enable {
 		gpio-hog;
 		gpios = <5 2>;	// line number in gpio port (not global)

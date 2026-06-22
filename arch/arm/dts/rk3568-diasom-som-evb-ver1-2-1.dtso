@@ -114,36 +114,36 @@
 };
  */
 &pinctrl {
-	csi {
-		csi1_pwr: csi1-pwr-pins {
-			rockchip,pins =
-				<3 RK_PD3 RK_FUNC_GPIO &pcfg_pull_up>;		/* CSI_PWREN1 */
-		};
-	};
+	// csi {
+	// 	csi1_pwr: csi1-pwr-pins {
+	// 		rockchip,pins =
+	// 			<3 RK_PD3 RK_FUNC_GPIO &pcfg_pull_up>;		/* CSI_PWREN1 */
+	// 	};
+	// };
 
-	fusb302 {
-		fusb302_pins: fusb302-pins {
-			rockchip,pins =
-				<1 RK_PA5 RK_FUNC_GPIO &pcfg_pull_up>;		/* USB3_OTG_INT */
-		};
-	};
+	// fusb302 {
+	// 	fusb302_pins: fusb302-pins {
+	// 		rockchip,pins =
+	// 			<1 RK_PA5 RK_FUNC_GPIO &pcfg_pull_up>;		/* USB3_OTG_INT */
+	// 	};
+	// };
 
-	pcie20 {
-		pcie20_pwr_pins: pcie20-pwr-pins {
-			rockchip,pins =
-				<0 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;	/* PCIE20_PWREN */
-		};
-	};
+	// pcie20 {
+	// 	pcie20_pwr_pins: pcie20-pwr-pins {
+	// 		rockchip,pins =
+	// 			<0 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;	/* PCIE20_PWREN */
+	// 	};
+	// };
 
-	usb {
-		usb3_host1_en_pins: usb3-host1-en-pins {
-			rockchip,pins =
-				<0 RK_PC3 RK_FUNC_GPIO &pcfg_pull_none>;	/* USB3_HOST1_EN */
-		};
+	// usb {
+	// 	usb3_host1_en_pins: usb3-host1-en-pins {
+	// 		rockchip,pins =
+	// 			<0 RK_PC3 RK_FUNC_GPIO &pcfg_pull_none>;	/* USB3_HOST1_EN */
+	// 	};
 
-		usb3_otg0_en_pins: usb3-otg0-en-pins {
-			rockchip,pins =
-				<0 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;	/* USB3_OTG0_EN */
-		};
-	};
+	// 	usb3_otg0_en_pins: usb3-otg0-en-pins {
+	// 		rockchip,pins =
+	// 			<0 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;	/* USB3_OTG0_EN */
+	// 	};
+	// };
 };
