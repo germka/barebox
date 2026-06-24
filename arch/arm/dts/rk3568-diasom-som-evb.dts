@@ -143,100 +143,90 @@
 	};
 };
 
-/* Привязка питания к первому физическому блоку PHY (USB Host 0 / OTG) */
+/* === ЕДИНЫЙ ФИЗИЧЕСКИЙ БЛОК PHY0 (Здесь разведены оба устройства) === */
+
 &usb2phy0 {
-	/* Указываем PHY-контроллеру, какой регулятор отвечает за его логику */
-	phy-supply = <&vcc5v0_usb3_otg0>;
+	/* Оставляем общее питание для PHY0 */
+	phy-supply = <&vcc5v0_usb3_host1>; 
 	status = "okay";
 };
 
+/* Линии хаба TUSB2077 (Аппаратный OTG0) */
+&usb2phy0_otg {
+	status = "okay";
+};
+
+/* Линии модема LE910C1-EU (Аппаратный Host0) */
 &usb2phy0_host {
 	rockchip,vbus-always-on;
 	status = "okay";
 };
 
-&usb2phy0_otg {
-	status = "disabled";
-};
 
-/* Настройка USB Host 0 (Контроллер DWC3 по адресу fcc00000) */
+/* === КОНТРОЛЛЕР ХАБА TUSB2077 (Использует xHCI 0 + половину PHY0_OTG) === */
+
 &usb_host0_xhci {
-	dr_mode = "host";
+	dr_mode = "otg";
 	phy_type = "utmi_wide";
+	
+	usb-role-switch;
+	role-switch-default-mode = "host";
 	/delete-property/ extcon;
+	
 	hnp-disable;
 	srp-disable;
-	status = "okay";
+
+	usb2-lpm-disable;
+	snps,dis_u2_susphy_quirk; 
+	snps,dis_u3_susphy_quirk;
+	snps,dis-start-transfer-quirk;
+	snps,dis-del-phy-power-chg-quirk;    /* устраняет сбой debounce при старте PHY */
+	snps,quirk-frame-length-adjustment;   /* подстраивает длину кадра под USB 1.1 */
 	
-	/* Host 0 (OTG-контроллер) использует otg-порт первого PHY */
-	phys = <&usb2phy0_host>;
+	phys = <&usb2phy0_otg>;
 	phy-names = "usb2-phy";
-};
-
-&usb_host0_ehci {
-	dr_mode = "host";
 	status = "okay";
 };
 
-&usb_host0_ohci {
-	dr_mode = "host";
+
+&usb_host0_ehci { status = "disabled"; };
+&usb_host0_ohci { status = "disabled"; };
+
+
+/* === КОНТРОЛЛЕР МОДЕМА (Использует xHCI 1 + половину PHY0_HOST) === */
+
+&combphy1 {
 	status = "okay";
 };
 
-/* Привязка питания ко второму физическому блоку PHY (USB Host 1) */
-&usb2phy1 {
-	/* Указываем PHY-контроллеру регулятор для второго порта */
-	phy-supply = <&vcc5v0_usb3_host1>;
-	status = "okay";
-};
-
-&usb2phy1_host {
-	/* Принудительный Host-режим детекции для второго порта */
-	rockchip,vbus-always-on;
-	status = "okay";
-};
-
-&usb2phy1_otg {
-	// rockchip,vbus-always-on;
-	status = "disabled";
-};
-
-/* Настройка USB Host 1 (Контроллер DWC3 по адресу fd000000) */
 &usb_host1_xhci {
 	dr_mode = "host";
 	phy_type = "utmi_wide";
 	/delete-property/ extcon;
 	hnp-disable;
 	srp-disable;
-	status = "okay";
 	
-	phys = <&usb2phy1_host>, <&combphy1 PHY_TYPE_USB3>;
+	phys = <&usb2phy0_host>, <&combphy1 PHY_TYPE_USB3>;
 	phy-names = "usb2-phy", "usb3-phy";
-};
-
-&usb_host1_ehci {
-	dr_mode = "host";
 	status = "okay";
 };
 
-&usb_host1_ohci {
-	dr_mode = "host";
-	status = "okay";
-};
+&usb_host1_ehci { status = "disabled"; };
+&usb_host1_ohci { status = "disabled"; };
 
-&combphy1 {
-	/* USB3.0 HOST1 */
-	status = "okay";
-};
+
+/* === НЕИСПОЛЬЗУЕМЫЙ ФИЗИЧЕСКИЙ БЛОК PHY1 (Полностью отключаем) === */
+&usb2phy1 { status = "disabled"; };
+&usb2phy1_host { status = "disabled"; };
+&usb2phy1_otg { status = "disabled"; };
+
+/* === РЕГУЛЯТОРЫ ПИТАНИЯ === */
 
 &vcc5v0_usb3_host1 {
 	compatible = "regulator-fixed";
 	regulator-name = "vcc5v0_usb3_host1";
 	regulator-min-microvolt = <5000000>;
 	regulator-max-microvolt = <5000000>;
-	
-	/* СТРОКИ С GPIO И PINCTRL УДАЛЕНЫ, ЧТОБЫ ИЗБЕЖАТЬ КОНФЛИКТОВ */
-	/* ТЕПЕРЬ РЕГУЛЯТОР СЧИТАЕТСЯ ВИРТУАЛЬНЫМ И ВСЕГДА ВКЛЮЧЕННЫМ */
 	regulator-always-on;
 	regulator-boot-on;
 	status = "okay";
@@ -247,8 +237,6 @@
 	regulator-name = "vcc5v0_usb3_otg0";
 	regulator-min-microvolt = <5000000>;
 	regulator-max-microvolt = <5000000>;
-	
-	/* СТРОКИ С GPIO И PINCTRL УДАЛЕНЫ */
 	regulator-always-on;
 	regulator-boot-on;
 	status = "okay";
