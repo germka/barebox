@@ -143,117 +143,86 @@
 	};
 };
 
-/* === ЕДИНЫЙ ФИЗИЧЕСКИЙ БЛОК PHY0 (Здесь разведены оба устройства) === */
-
+/* === ЕДИНЫЙ ФИЗИЧЕСКИЙ БЛОК PHY0 === */
 &usb2phy0 {
-	/* Оставляем общее питание для PHY0 */
-	phy-supply = <&vcc5v0_usb3_host1>; 
-	status = "okay";
+    phy-supply = <&vcc5v0_usb3_host1>;
+    status = "okay";
 };
 
-/* Линии хаба TUSB2077 (Аппаратный OTG0) */
 &usb2phy0_otg {
-	status = "okay";
+    status = "okay";
 };
 
-/* Линии модема LE910C1-EU (Аппаратный Host0) */
 &usb2phy0_host {
-	rockchip,vbus-always-on;
-	status = "okay";
+    rockchip,vbus-always-on;
+    status = "okay";
 };
 
-
-/* === КОНТРОЛЛЕР ХАБА TUSB2077 (Использует xHCI 0 + половину PHY0_OTG) === */
-
+/* === КОНТРОЛЛЕР ХАБА (OTG0) === */
 &usb_host0_xhci {
-	dr_mode = "otg";
-	phy_type = "utmi_wide";
-	
-	usb-role-switch;
-	role-switch-default-mode = "host";
-	/delete-property/ extcon;
-	
-	hnp-disable;
-	srp-disable;
+    dr_mode = "otg";
+    phy_type = "utmi_wide";
+    usb-role-switch;
+    role-switch-default-mode = "host";
+    /delete-property/ extcon;
+    hnp-disable;
+    srp-disable;
+    usb2-lpm-disable;
+    snps,dis_u2_susphy_quirk;
+    snps,dis_u3_susphy_quirk;
+    snps,dis-start-transfer-quirk;
+    snps,dis-del-phy-power-chg-quirk;
+    snps,quirk-frame-length-adjustment;
 
-	usb2-lpm-disable;
-	snps,dis_u2_susphy_quirk; 
-	snps,dis_u3_susphy_quirk;
-	snps,dis-start-transfer-quirk;
-	snps,dis-del-phy-power-chg-quirk;    /* устраняет сбой debounce при старте PHY */
-	snps,quirk-frame-length-adjustment;   /* подстраивает длину кадра под USB 1.1 */
-	
-	phys = <&usb2phy0_otg>;
-	phy-names = "usb2-phy";
-	status = "okay";
+    phys = <&usb2phy0_otg>;
+    phy-names = "usb2-phy";
+    status = "okay";
 };
-
 
 &usb_host0_ehci { status = "disabled"; };
 &usb_host0_ohci { status = "disabled"; };
 
-
-/* === КОНТРОЛЛЕР МОДЕМА (Использует xHCI 1 + половину PHY0_HOST) === */
-
-&combphy1 {
-	status = "okay";
-};
+/* === КОНТРОЛЛЕР МОДЕМА (HOST0) === */
+&combphy1 { status = "okay"; };
 
 &usb_host1_xhci {
-	dr_mode = "host";
-	phy_type = "utmi_wide";
-	/delete-property/ extcon;
-	hnp-disable;
-	srp-disable;
-	
-	phys = <&usb2phy0_host>, <&combphy1 PHY_TYPE_USB3>;
-	phy-names = "usb2-phy", "usb3-phy";
-	status = "okay";
+    dr_mode = "host";
+    phy_type = "utmi_wide";
+    /delete-property/ extcon;
+    hnp-disable;
+    srp-disable;
+    phys = <&usb2phy0_host>, <&combphy1 PHY_TYPE_USB3>;
+    phy-names = "usb2-phy", "usb3-phy";
+    status = "okay";
 };
 
 &usb_host1_ehci { status = "disabled"; };
 &usb_host1_ohci { status = "disabled"; };
 
-
-/* === НЕИСПОЛЬЗУЕМЫЙ ФИЗИЧЕСКИЙ БЛОК PHY1 (Полностью отключаем) === */
+/* === PHY1 отключен === */
 &usb2phy1 { status = "disabled"; };
 &usb2phy1_host { status = "disabled"; };
 &usb2phy1_otg { status = "disabled"; };
 
 /* === РЕГУЛЯТОРЫ ПИТАНИЯ === */
-
 &vcc5v0_usb3_host1 {
-	compatible = "regulator-fixed";
-	regulator-name = "vcc5v0_usb3_host1";
-	regulator-min-microvolt = <5000000>;
-	regulator-max-microvolt = <5000000>;
-	regulator-always-on;
-	regulator-boot-on;
-	status = "okay";
+    compatible = "regulator-fixed";
+    regulator-name = "vcc5v0_usb3_host1";
+    regulator-min-microvolt = <5000000>;
+    regulator-max-microvolt = <5000000>;
+    regulator-always-on;
+    regulator-boot-on;
+    status = "okay";
 };
 
 &vcc5v0_usb3_otg0 {
-	compatible = "regulator-fixed";
-	regulator-name = "vcc5v0_usb3_otg0";
-	regulator-min-microvolt = <5000000>;
-	regulator-max-microvolt = <5000000>;
-	regulator-always-on;
-	regulator-boot-on;
-	status = "okay";
-};
-
-&can1 {
-	status = "disabled";
-};
-
-&can2 {
-	status = "disabled";
-};
-
-&combphy2 {
-	/* PCI-E 2.0 */
-	phy-supply = <&vcc3v3_pcie20>;
-	status = "disabled";
+    compatible = "regulator-fixed";
+    regulator-name = "vcc5v0_usb3_otg0";
+    regulator-min-microvolt = <5000000>;
+    regulator-max-microvolt = <5000000>;
+    regulator-always-on;
+    regulator-boot-on;
+    status = "okay";
 };
 
 &csi2_dphy0 {
@@ -652,21 +621,20 @@
 	// };
 };
 
-&gpio4 {
-	compatible = "rockchip,gpio-bank";
-	reg = <0x0 0xfe770000 0x0 0x100>;
-	interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
-	clocks = <&cru PCLK_GPIO4>, <&cru DBCLK_GPIO4>;
-	gpio-controller;
-	gpio-ranges = <&pinctrl 0 128 32>;
-	#gpio-cells = <2>;
-	interrupt-controller;
-	#interrupt-cells = <2>;
-	line_en-buff {
-		gpio-hog;
-		gpios = <20 2>;	// line number in gpio port (not global)
-		output-high;
-		line-name = "en-buffer";
+&pinctrl {
+	usb_reset {
+		hub_reset_pin: hub-reset-pin {
+			/*
+			* Настраиваем GPIO1_A1 как выход с низким уровнем.
+			*/
+			rockchip,pins = <1 RK_PA1 RK_FUNC_GPIO &pcfg_output_low>;
+		};
+		mdm_reset_pin: mdm-reset-pin {
+			/*
+			* Настраиваем GPIO1_A3 как выход с низким уровнем.
+			*/
+			rockchip,pins = <1 RK_PA3 RK_FUNC_GPIO &pcfg_output_low>;
+		};
 	};
 };
 
@@ -682,6 +650,9 @@
 };
 
 &gpio1 {
+	pinctrl-0 = <&hub_reset_pin &mdm_reset_pin>;
+    pinctrl-names = "default";
+
 	compatible = "rockchip,gpio-bank";
 	reg = <0x0 0xfe740000 0x0 0x100>;
 	interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
@@ -691,7 +662,7 @@
 	#gpio-cells = <2>;
 	interrupt-controller;
 	#interrupt-cells = <2>;
-	gpio-line-names = "","","","mdm-reset","","wl-enable","","","","pps-out","","","","","","","","","","","","","","","","","","","","","","";
+	gpio-line-names = "","hub-reset","","mdm-reset","","wl-enable","","","","pps-out","","","","","","","","","","","","","","","","","","","","","","";
 	/*
 	line_pps {
 		gpio-hog;
@@ -739,5 +710,23 @@
 		gpios = <29 2>;	// line number in gpio port (not global)
 		output-high;
 		line-name = "buff-enable";
+	};
+};
+
+&gpio4 {
+	compatible = "rockchip,gpio-bank";
+	reg = <0x0 0xfe770000 0x0 0x100>;
+	interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+	clocks = <&cru PCLK_GPIO4>, <&cru DBCLK_GPIO4>;
+	gpio-controller;
+	gpio-ranges = <&pinctrl 0 128 32>;
+	#gpio-cells = <2>;
+	interrupt-controller;
+	#interrupt-cells = <2>;
+	line_en-buff {
+		gpio-hog;
+		gpios = <20 2>;	// line number in gpio port (not global)
+		output-high;
+		line-name = "en-buffer";
 	};
 };
