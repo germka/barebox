@@ -143,86 +143,75 @@
 	};
 };
 
-/* === ЕДИНЫЙ ФИЗИЧЕСКИЙ БЛОК PHY0 === */
+/* === ЕДИНЫЙ ФИЗИЧЕСКИЙ БЛОК PHY0 (Здесь разведены оба устройства) === */
 &usb2phy0 {
-    phy-supply = <&vcc5v0_usb3_host1>;
     status = "okay";
 };
 
+/* Линии хаба TUSB2077 (Аппаратный OTG0) */
 &usb2phy0_otg {
+	rockchip,vbus-always-on;
     status = "okay";
 };
 
+/* Линии модема LE910C1-EU (Аппаратный Host0) */
 &usb2phy0_host {
-    rockchip,vbus-always-on;
-    status = "okay";
+	rockchip,vbus-always-on;
+	status = "okay";
 };
 
-/* === КОНТРОЛЛЕР ХАБА (OTG0) === */
+/* === КОНТРОЛЛЕР ХАБА TUSB2077 (Использует xHCI 0 + половину PHY0_OTG) === */
 &usb_host0_xhci {
-    dr_mode = "otg";
-    phy_type = "utmi_wide";
-    usb-role-switch;
-    role-switch-default-mode = "host";
-    /delete-property/ extcon;
-    hnp-disable;
-    srp-disable;
-    usb2-lpm-disable;
-    snps,dis_u2_susphy_quirk;
-    snps,dis_u3_susphy_quirk;
-    snps,dis-start-transfer-quirk;
-    snps,dis-del-phy-power-chg-quirk;
-    snps,quirk-frame-length-adjustment;
-
+    dr_mode = "host";
     phys = <&usb2phy0_otg>;
     phy-names = "usb2-phy";
+    maximum-speed = "high-speed";
     status = "okay";
 };
 
-&usb_host0_ehci { status = "disabled"; };
-&usb_host0_ohci { status = "disabled"; };
-
-/* === КОНТРОЛЛЕР МОДЕМА (HOST0) === */
-&combphy1 { status = "okay"; };
-
-&usb_host1_xhci {
-    dr_mode = "host";
-    phy_type = "utmi_wide";
-    /delete-property/ extcon;
-    hnp-disable;
-    srp-disable;
-    phys = <&usb2phy0_host>, <&combphy1 PHY_TYPE_USB3>;
-    phy-names = "usb2-phy", "usb3-phy";
+&usb_host0_ehci {
     status = "okay";
+};
+
+/* === КОНТРОЛЛЕР МОДЕМА (Использует xHCI 1 + половину PHY0_HOST) === */
+&usb_host1_xhci {
+	dr_mode = "host";
+	phys = <&usb2phy0_host>, <&combphy1 PHY_TYPE_USB3>;
+	phy-names = "usb2-phy", "usb3-phy";
+	status = "okay";
 };
 
 &usb_host1_ehci { status = "disabled"; };
 &usb_host1_ohci { status = "disabled"; };
 
-/* === PHY1 отключен === */
+&combphy1 {
+	status = "okay";
+};
+
+/* === НЕИСПОЛЬЗУЕМЫЙ ФИЗИЧЕСКИЙ БЛОК PHY1 (Полностью отключаем) === */
 &usb2phy1 { status = "disabled"; };
 &usb2phy1_host { status = "disabled"; };
 &usb2phy1_otg { status = "disabled"; };
 
 /* === РЕГУЛЯТОРЫ ПИТАНИЯ === */
 &vcc5v0_usb3_host1 {
-    compatible = "regulator-fixed";
-    regulator-name = "vcc5v0_usb3_host1";
-    regulator-min-microvolt = <5000000>;
-    regulator-max-microvolt = <5000000>;
-    regulator-always-on;
-    regulator-boot-on;
-    status = "okay";
+	compatible = "regulator-fixed";
+	regulator-name = "vcc5v0_usb3_host1";
+	regulator-min-microvolt = <5000000>;
+	regulator-max-microvolt = <5000000>;
+	regulator-always-on;
+	regulator-boot-on;
+	status = "okay";
 };
 
 &vcc5v0_usb3_otg0 {
-    compatible = "regulator-fixed";
-    regulator-name = "vcc5v0_usb3_otg0";
-    regulator-min-microvolt = <5000000>;
-    regulator-max-microvolt = <5000000>;
-    regulator-always-on;
-    regulator-boot-on;
-    status = "okay";
+	compatible = "regulator-fixed";
+	regulator-name = "vcc5v0_usb3_otg0";
+	regulator-min-microvolt = <5000000>;
+	regulator-max-microvolt = <5000000>;
+	regulator-always-on;
+	regulator-boot-on;
+	status = "okay";
 };
 
 &csi2_dphy0 {
@@ -601,34 +590,15 @@
 				<4 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;		/* PCIE30X2_PERSTn_M2 */
 		};
 
-		// pcie30_oe_pins: pcie30-oe-pins {
-		// 	rockchip,pins =
-		// 		<3 RK_PD4 RK_FUNC_GPIO &pcfg_pull_up>;		/* PCIECLKIC_OE */
-		// };
-
 		pcie30_pwr_pins: pcie30-pwr-pins {
 			rockchip,pins =
 				<3 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;		/* PCIE30_PWREN */
 		};
 	};
-
-	// usbmux {
-	// 	usbmux_pins: usbmux-pins {
-	// 		rockchip,pins =
-	// 			<4 RK_PD2 RK_FUNC_GPIO &pcfg_pull_up>,		/* USB3_OTG0_SEL */
-	// 			<3 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;	/* Unused */
-	// 	};
-	// };
 };
 
 &pinctrl {
 	usb_reset {
-		hub_reset_pin: hub-reset-pin {
-			/*
-			* Настраиваем GPIO1_A1 как выход с низким уровнем.
-			*/
-			rockchip,pins = <1 RK_PA1 RK_FUNC_GPIO &pcfg_output_low>;
-		};
 		mdm_reset_pin: mdm-reset-pin {
 			/*
 			* Настраиваем GPIO1_A3 как выход с низким уровнем.
@@ -650,7 +620,7 @@
 };
 
 &gpio1 {
-	pinctrl-0 = <&hub_reset_pin &mdm_reset_pin>;
+	pinctrl-0 = <&mdm_reset_pin>;
     pinctrl-names = "default";
 
 	compatible = "rockchip,gpio-bank";
