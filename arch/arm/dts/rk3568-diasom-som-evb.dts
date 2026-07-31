@@ -21,6 +21,7 @@
 		mmc1 = &sdmmc0;
 		gpio5 = &pcf8574a;
 		rtc1 = &pcf85063;
+		bootstate = &bootstate;
 	};
 
 	chosen {
@@ -30,6 +31,43 @@
 			status = "disabled";
 		};
 	};
+
+	bootstate: state {
+	        magic = <0x424f4f54>;
+	        compatible = "barebox,state";
+	        backend-type = "raw";
+	        backend = &backend_state_partition; /* Ссылка на раздел в sdhci */
+	
+	        #address-cells = <1>;
+	        #size-cells = <1>;
+	
+	        /* Переменные bootchooser (из первого ответа) */
+	        system0 {
+	            reg = <0x0 0x10>;
+	            type = "uint32";
+	            default = <10>;
+	        };
+	        system0_remaining_attempts {
+	            reg = <0x10 0x4>;
+	            type = "uint32";
+	            default = <3>;
+	        };
+	        system1 {
+	            reg = <0x14 0x10>;
+	            type = "uint32";
+	            default = <9>;
+	        };
+	        system1_remaining_attempts {
+	            reg = <0x24 0x4>;
+	            type = "uint32";
+	            default = <3>;
+	        };
+	        last_chosen {
+	            reg = <0x28 0x4>;
+	            type = "uint32";
+	            default = <0>;
+	        };
+	    };
 
 	clk25m: clk25m {
 		compatible = "fixed-clock";
@@ -280,6 +318,24 @@
 	status = "okay";
 };
 
+&sdhci {
+    status = "okay";
+    non-removable;
+    bus-width = <8>;
+
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <2>; /* Для RK3568 используются 64-битные адреса */
+        #size-cells = <2>;
+
+        /* Выделяем 1 МБ памяти на смещении 8 МБ от начала eMMC. */
+        backend_state_partition: state@800000 {
+            label = "barebox-state";
+            reg = <0x0 0x800000 0x0 0x100000>; /* Смещение 8МБ, размер 1МБ */
+        };
+    };
+};
+
 &i2c1 {
 	/* FUSB302 is not detected at 1MHz, so lets reduce frequency to 400KHz */
 	clock-frequency = <400000>;
@@ -287,9 +343,25 @@
 };
 
 &i2c4 {
+	pinctrl-0 = <&i2c4m0_xfer>;
+/*
+	pinctrl-1 = <&i2c4m0_gpio>;
+	pinctrl-names = "default", "recovery";
+    recovery-gpios = <&gpio4 RK_PB2 GPIO_ACTIVE_HIGH>,
+                     <&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
+ */
+	resets = <&cru SRST_I2C4>;
+    	reset-names = "i2c";
+/*
+	i2c-scl-rising-time-ns = <200>;
+    i2c-scl-falling-time-ns = <200>;
+    i2c-sda-holding-time-ns = <200>;
+    retries = <3>;
+    timeout-ms = <1000>;
+ */
 	clock-frequency = <100000>;
-	status = "okay";
 	multi-master;
+	status = "okay";
 
 	pcf8574a: gpio5@38 {
 		compatible = "nxp,pcf8574a";
@@ -492,9 +564,6 @@
 	/delete-property/ dmas;
 	pinctrl-0 = <&uart4m0_xfer>;
 	status = "okay";
-	// bluetooth {
-	// 	compatible = "realtek,rtl8821cs-bt", "realtek,rtl8723bs-bt";
-	// };
 };
 
 &vpu {
@@ -604,6 +673,13 @@
 			* Настраиваем GPIO1_A3 как выход с низким уровнем.
 			*/
 			rockchip,pins = <1 RK_PA3 RK_FUNC_GPIO &pcfg_output_low>;
+		};
+	};
+	i2c4_reset {
+		i2c4m0_gpio: i2c4m0-gpio {
+			rockchip,pins =
+				<4 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>,  /* SDA */
+				<4 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;  /* SCL */
 		};
 	};
 };
