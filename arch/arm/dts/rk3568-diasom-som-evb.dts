@@ -42,27 +42,27 @@
 	        #size-cells = <1>;
 	
 	        /* Переменные bootchooser (из первого ответа) */
-	        system0 {
+	        system0 { /* Раздел с ядром */
 	            reg = <0x0 0x10>;
 	            type = "uint32";
 	            default = <10>;
 	        };
-	        system0_remaining_attempts {
+	        system0_remaining_attempts { /* Количество попыток */
 	            reg = <0x10 0x4>;
 	            type = "uint32";
 	            default = <3>;
 	        };
-	        system1 {
+	        system1 { /* Система #1 */
 	            reg = <0x14 0x10>;
 	            type = "uint32";
 	            default = <9>;
 	        };
-	        system1_remaining_attempts {
+	        system1_remaining_attempts { /* Осталось попыток системы #1 */
 	            reg = <0x24 0x4>;
 	            type = "uint32";
 	            default = <3>;
 	        };
-	        last_chosen {
+	        last_chosen { /* Последняя выбранная система */
 	            reg = <0x28 0x4>;
 	            type = "uint32";
 	            default = <0>;
@@ -328,10 +328,10 @@
         #address-cells = <2>; /* Для RK3568 используются 64-битные адреса */
         #size-cells = <2>;
 
-        /* Выделяем 1 МБ памяти на смещении 8 МБ от начала eMMC. */
-        backend_state_partition: state@800000 {
+        /* Смещение 0x8000 (32 KB = 64 сектор), размер 0x4000 (16 KB) */
+        backend_state_partition: state@8000 {
             label = "barebox-state";
-            reg = <0x0 0x800000 0x0 0x100000>; /* Смещение 8МБ, размер 1МБ */
+            reg = <0x0 0x8000 0x0 0x4000>; 
         };
     };
 };
