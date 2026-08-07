@@ -36,7 +36,8 @@
 	        magic = <0x424f4f54>;
 	        compatible = "barebox,state";
 	        backend-type = "raw";
-	        backend = &backend_state_partition; /* Ссылка на раздел в sdhci */
+			/* Ищем раздел с именем 'state' на устройстве mci0 (ваша eMMC) */
+        	backend = "partname:mci0.state";
 	
 	        #address-cells = <1>;
 	        #size-cells = <1>;
@@ -322,18 +323,6 @@
     status = "okay";
     non-removable;
     bus-width = <8>;
-
-    partitions {
-        compatible = "fixed-partitions";
-        #address-cells = <2>; /* Для RK3568 используются 64-битные адреса */
-        #size-cells = <2>;
-
-        /* Смещение 0x8000 (32 KB = 64 сектор), размер 0x4000 (16 KB) */
-        backend_state_partition: state@8000 {
-            label = "barebox-state";
-            reg = <0x0 0x8000 0x0 0x4000>; 
-        };
-    };
 };
 
 &i2c1 {
