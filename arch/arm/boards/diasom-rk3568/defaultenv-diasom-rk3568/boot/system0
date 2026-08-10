@@ -1,12 +1,10 @@
 #!/bin/sh
 
-# Автоматически определяем текущий диск (mmc0 или mmc1), с которого запустился Barebox
-CURRENT_DEV="mmc${global.bootsource_instance}"
-
+# Создаем точку монтирования (ошибки скрывать не нужно, husher их пропустит)
 mkdir -p /mnt/rootfs_a
-mount /dev/${CURRENT_DEV}.rootfs_a /mnt/rootfs_a > /dev/null 2>&1
+mount /dev/mmc0.rootfs_a /mnt/rootfs_a
 
-# Прописываем пути к ядру и DTB внутри вашего rootfs_a
+# Передаем параметры ядра
 global.bootm.image=/mnt/rootfs_a/boot/Image.gz
 global.bootm.oftree=/mnt/rootfs_a/boot/rk3568-diasom-som-evb.dtb
-global.linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae rw rootwait"
+global.linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae ro rootwait"

@@ -18,23 +18,12 @@
 	aliases {
 		ethernet0 = &gmac0;
 		ethernet1 = &gmac1;
-		mmc1 = &sdmmc0;
 		gpio5 = &pcf8574a;
 		rtc1 = &pcf85063;
 		state = &state_node;
 		mmc0 = &sdmmc0;
         mmc1 = &sdmmc1;
 	};
-
-    chosen {
-        /* Магия автоматического переключения: */
-        /* Если BootROM рапортует старт с mmc0 (eMMC), 
-		bootsource смотрит на mmc0 */
-        barebox,bootsource-mmc0 = &sdmmc0;
-        /* Если BootROM рапортует старт с mmc1 (SD), 
-		bootsource прозрачно переключается на mmc1 */
-        barebox,bootsource-mmc1 = &sdmmc1;
-    };
 
 	state_node: state {
         compatible = "barebox,state";
