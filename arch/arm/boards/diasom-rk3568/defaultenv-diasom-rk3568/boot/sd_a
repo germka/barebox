@@ -1,6 +1,0 @@
-#!/bin/sh
-mkdir -p /mnt/sd_a
-mount /dev/mmc1.rootfs_a /mnt/sd_a > /dev/null 2>&1
-global.bootm.image=/mnt/sd_a/boot/Image.gz
-global.bootm.oftree=/mnt/sd_a/boot/rk3568-diasom-som-evb.dtb
-global.linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae ro rootwait"

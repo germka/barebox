@@ -1,5 +1,21 @@
 #!/bin/sh
 
+# Barebox автоматически заполняет переменные global.bootsource (например, "mmc") 
+# и global.bootsource_instance (0 для eMMC, 1 для SD согласно вашему devinfo)
+
+CURRENT_MMC="mmc${global.bootsource_instance}"
+
+mkdir -p /mnt/rootfs_a
+mkdir -p /mnt/rootfs_b
+
+# Динамически монтируем разделы текущего активного накопителя
+mount /dev/${CURRENT_MMC}.rootfs_a /mnt/rootfs_a > /dev/null 2>&1
+mount /dev/${CURRENT_MMC}.rootfs_b /mnt/rootfs_b > /dev/null 2>&1
+
+# Далее bootchooser сам выберет, какой из смонтированных путей запустить
+
+exit 0
+
 if [ -f /mnt/mmc1.2/boot/Image.gz ]; then
 	echo "Booting from SD"
 
