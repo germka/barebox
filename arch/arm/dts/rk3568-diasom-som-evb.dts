@@ -21,7 +21,7 @@
 		mmc1 = &sdmmc0;
 		gpio5 = &pcf8574a;
 		rtc1 = &pcf85063;
-		bootstate = &bootstate;
+		state = &state_node;
 	};
 
     chosen {
@@ -33,7 +33,7 @@
         };
     };
 
-	bootstate: state {
+	state_node: state {
 	        compatible = "barebox,state";
 	        magic = <0x4c726d63>;
 	
