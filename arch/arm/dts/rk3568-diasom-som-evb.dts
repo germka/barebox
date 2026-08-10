@@ -24,50 +24,57 @@
 		bootstate = &bootstate;
 	};
 
-	chosen {
-		environment-sd {
-			compatible = "barebox,environment";
-			device-path = &sdmmc0, "partname:env";
-			status = "disabled";
-		};
-	};
+    chosen {
+        /* Указываем Barebox искать файлы окружения на SD-карте в разделе с нашим UUID */
+        environment = <&sdmmc0>;
+        
+        environment-storage-hints {
+            partuuid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
+        };
+    };
 
 	bootstate: state {
-	        magic = <0x424f4f54>;
+	        magic = <0x4c726d63>;
 	        compatible = "barebox,state";
 	        backend-type = "raw";
-			/* Ищем раздел с именем 'state' на устройстве mci0 (ваша eMMC) */
-        	backend = "partname:mci0.state";
+        	backend = <&sdmmc0>; 
 	
 	        #address-cells = <1>;
 	        #size-cells = <1>;
+
+			backend-storage-hints {
+				/* Указываем UUID раздела state из разметки GPT */
+				partuuid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
+			}
 	
-	        /* Переменные bootchooser (из первого ответа) */
-	        system0 { /* Раздел с ядром */
-	            reg = <0x0 0x10>;
-	            type = "uint32";
-	            default = <10>;
-	        };
-	        system0_remaining_attempts { /* Количество попыток */
-	            reg = <0x10 0x4>;
-	            type = "uint32";
-	            default = <3>;
-	        };
-	        system1 { /* Система #1 */
-	            reg = <0x14 0x10>;
-	            type = "uint32";
-	            default = <9>;
-	        };
-	        system1_remaining_attempts { /* Осталось попыток системы #1 */
-	            reg = <0x24 0x4>;
-	            type = "uint32";
-	            default = <3>;
-	        };
-	        last_chosen { /* Последняя выбранная система */
-	            reg = <0x28 0x4>;
-	            type = "uint32";
-	            default = <0>;
-	        };
+			bootstate {
+				/* Переменные bootchooser (из первого ответа) */
+				system0 { /* Раздел с ядром */
+					reg = <0x0 0x10>;
+					type = "uint32";
+					default = <10>;
+				};
+				system0_remaining_attempts { /* Количество попыток */
+					reg = <0x10 0x4>;
+					type = "uint32";
+					default = <3>;
+				};
+				system1 { /* Система #1 */
+					reg = <0x14 0x10>;
+					type = "uint32";
+					default = <9>;
+				};
+				system1_remaining_attempts { /* Осталось попыток системы #1 */
+					reg = <0x24 0x4>;
+					type = "uint32";
+					default = <3>;
+				};
+				last_chosen { /* Последняя выбранная система */
+					reg = <0x28 0x4>;
+					type = "uint32";
+					default = <0>;
+				};
+			}
 	    };
 
 	clk25m: clk25m {
