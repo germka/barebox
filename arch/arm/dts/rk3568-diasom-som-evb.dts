@@ -22,24 +22,27 @@
 		gpio5 = &pcf8574a;
 		rtc1 = &pcf85063;
 		state = &state_node;
+		mmc0 = &sdmmc0;
+        mmc1 = &sdmmc1;
 	};
 
     chosen {
-    chosen {
-        environment = <&bootsource>;
-        environment-storage-hints {
-            partuuid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
-        };
-    };
+        /* Магия автоматического переключения: */
+        /* Если BootROM рапортует старт с mmc0 (eMMC), 
+		bootsource смотрит на mmc0 */
+        barebox,bootsource-mmc0 = &sdmmc0;
+        /* Если BootROM рапортует старт с mmc1 (SD), 
+		bootsource прозрачно переключается на mmc1 */
+        barebox,bootsource-mmc1 = &sdmmc1;
     };
 
 	state_node: state {
 	        compatible = "barebox,state";
 	        magic = <0x4c726d63>;
 	
-			/* Ссылаемся на bootsource вместо конкретного mmc */
-        	backend = <&bootsource>;
+        	backend = <&sdmmc0>; 
 	        backend-type = "raw";
+			/* Благодаря этому GUID, Barebox найдет раздел и на SD, и на eMMC */
 			backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
 	
 			bootstate {
