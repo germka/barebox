@@ -1,18 +1,15 @@
 #!/bin/sh
 
-# Barebox автоматически заполняет переменные global.bootsource (например, "mmc") 
-# и global.bootsource_instance (0 для eMMC, 1 для SD согласно вашему devinfo)
+# Автоматически собираем имя текущего загрузочного диска (mmc0 или mmc1)
+CURRENT_DEV="mmc${global.bootsource_instance}"
 
-CURRENT_MMC="mmc${global.bootsource_instance}"
+mkdir -p /mnt/line_a
+# Монтируем rootfs_a именно с того накопителя, с которого плата сейчас работает
+mount /dev/${CURRENT_DEV}.rootfs_a /mnt/line_a > /dev/null 2>&1
 
-mkdir -p /mnt/rootfs_a
-mkdir -p /mnt/rootfs_b
-
-# Динамически монтируем разделы текущего активного накопителя
-mount /dev/${CURRENT_MMC}.rootfs_a /mnt/rootfs_a > /dev/null 2>&1
-mount /dev/${CURRENT_MMC}.rootfs_b /mnt/rootfs_b > /dev/null 2>&1
-
-# Далее bootchooser сам выберет, какой из смонтированных путей запустить
+global.bootm.image=/mnt/line_a/boot/Image.gz
+global.bootm.oftree=/mnt/line_a/boot/rk3568-diasom-som-evb.dtb
+global.linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae ro rootwait"
 
 exit 0
 
