@@ -37,31 +37,29 @@
     };
 
 	state_node: state {
-	        compatible = "barebox,state";
-	        magic = <0x4c726d63>;
-	
-        	backend = <&sdmmc1>; 
-	        backend-type = "raw";
-			/* Благодаря этому GUID, Barebox найдет раздел и на SD, и на eMMC */
-			backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
-	
-			bootstate {
-				#address-cells = <1>;
-				#size-cells = <1>;
-				/* Переменные bootchooser */
-				system0 {
-					/* Резервируем 16 байт под первый слот */
-					reg = <0x0 0x10>;
-					type = "uint32";
-				};
+        compatible = "barebox,state";
+        magic = <0x4c726d63>;
+        
+        backend = <&sdmmc0>; 
+        backend-type = "raw";
+        
+        backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
 
-				system1 {
-					/* Резервируем следующие 16 байт под второй слот */
-					reg = <0x10 0x10>;
-					type = "uint32";
-				};
-			};
-	    };
+        bootstate {
+            #address-cells = <1>;
+            #size-cells = <1>;
+
+            system0 {
+                reg = <0x0 0x10>;
+                type = "uint32";
+            };
+
+            system1 {
+                reg = <0x10 0x10>;
+                type = "uint32";
+            };
+        };
+    };
 
 	clk25m: clk25m {
 		compatible = "fixed-clock";
