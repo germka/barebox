@@ -1,17 +1,22 @@
 #!/bin/sh
 
-# Автоматически определяем имя текущего диска загрузки (mmc0 или mmc1)
-# На основе того, откуда стартанул сам загрузчик
+# Barebox сопоставит bootsource_instance с нашими алиасами (mmc0 или mmc1)
 CURRENT_DEV="mmc${global.bootsource_instance}"
 
-mkdir -p /mnt/rootfs_b
+# В ядре Linux порядок дисков может быть инвертирован (mmcblk0 или mmcblk1).
+# Используем PARTUUID, но так как у нас два одинаковых типа rootfs (A и B),
+# ядру нужно явно передать UUID конкретного уникального РАЗДЕЛА.
+# На этапе отладки, если eMMC молчит, Linux видит SD-карту как mmcblk0.
+if [ "${global.bootsource_instance}" = "0" ]; then
+    LINUX_ROOT="/dev/mmcblk0p5" # Загрузка со Слота А на SD-карте
+else
+    LINUX_ROOT="/dev/mmcblk1p5" # Загрузка со Слота А на eMMC
+fi
 
-# Монтируем rootfs_b именно с того физического носителя, с которого мы сейчас загрузились!
+mkdir -p /mnt/rootfs_b
 mount /dev/${CURRENT_DEV}.rootfs_b /mnt/rootfs_b
 
-# Загружаем ядро Linux
-global.bootm.image=/mnt/rootfs_b/boot/Image.gz
+global bootm.image="/mnt/rootfs_b/boot/Image.gz"
 
-# Передаем ядру Linux инструкцию искать корень по PARTUUID. 
-# Linux сам найдет этот раздел на нужном диске, даже если eMMC и SD поменяются индексами в ядре
-global.linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae rw rootwait"
+# Передаем Linux правильный корень и активируем вывод консоли Rockchip (ttyFIQ0)
+global linux.bootargs.dyn.root="root=${LINUX_ROOT} rw rootwait console=ttyFIQ0,1500000n8 init=/sbin/init"

@@ -1,11 +1,22 @@
 #!/bin/sh
 
-# 1. Создаем точку монтирования
+# Barebox сопоставит bootsource_instance с нашими алиасами (mmc0 или mmc1)
+CURRENT_DEV="mmc${global.bootsource_instance}"
+
+# В ядре Linux порядок дисков может быть инвертирован (mmcblk0 или mmcblk1).
+# Используем PARTUUID, но так как у нас два одинаковых типа rootfs (A и B),
+# ядру нужно явно передать UUID конкретного уникального РАЗДЕЛА.
+# На этапе отладки, если eMMC молчит, Linux видит SD-карту как mmcblk0.
+if [ "${global.bootsource_instance}" = "0" ]; then
+    LINUX_ROOT="/dev/mmcblk0p4" # Загрузка со Слота А на SD-карте
+else
+    LINUX_ROOT="/dev/mmcblk1p4" # Загрузка со Слота А на eMMC
+fi
+
 mkdir -p /mnt/rootfs_a
+mount /dev/${CURRENT_DEV}.rootfs_a /mnt/rootfs_a
 
-# 2. Монтируем rootfs_a строго с mmc0 (так как SD-карта определилась как mmc0)
-mount /dev/mmc0.rootfs_a /mnt/rootfs_a
-
-# 3. Назначаем переменные через команду global (БЕЗ использования знака '=' в начале строки)
 global bootm.image="/mnt/rootfs_a/boot/Image.gz"
-global linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae rw rootwait"
+
+# Передаем Linux правильный корень и активируем вывод консоли Rockchip (ttyFIQ0)
+global linux.bootargs.dyn.root="root=${LINUX_ROOT} rw rootwait console=ttyFIQ0,1500000n8 init=/sbin/init"

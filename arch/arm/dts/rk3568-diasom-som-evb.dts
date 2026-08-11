@@ -21,18 +21,11 @@
 		gpio5 = &pcf8574a;
 		rtc1 = &pcf85063;
 		state = &state_node;
-		mmc0 = &sdmmc0;
-        // mmc1 = &sdmmc1;
+        mmc0 = &sdmmc0; /* SD-карта (fe2b0000) */
+        mmc1 = &sdhci;  /* eMMC (fe310000) */
 	};
 
 	chosen {
-        /* ДИНАМИЧЕСКИЙ ПЕРЕХВАТ: */
-        /* Если BootROM запустил Barebox с eMMC (инстанс 0), 
-		bootsource связывается с eMMC */
-        barebox,bootsource-mmc0 = &sdhci;
-        /* Если BootROM запустил Barebox с SD-карты (инстанс 1), 
-		bootsource связывается с SD */
-        barebox,bootsource-mmc1 = &sdmmc0;
     };
 
 	state_node: state {
@@ -40,7 +33,6 @@
         magic = <0x4c726d63>;
         
         backend = <&sdmmc0>; 
-        // backend-type = "raw";
         backend-type = "circular";
 
         backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
