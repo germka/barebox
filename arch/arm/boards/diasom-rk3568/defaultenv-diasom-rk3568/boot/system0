@@ -1,25 +1,11 @@
 #!/bin/sh
 
-# Автоматически определяем буквенное имя диска (mmc0 или mmc1) по его аппаратному пути
-if [ "${global.bootsource}" = "mmc" ]; then
-    # Проверяем, какой контроллер сейчас является источником загрузки
-    if devinfo -v | grep -q "fe2b0000.mmc"; then
-        # Если загрузились с fe2b0000 (SD-карта), смотрим, какое имя дал ему Barebox
-        # Мы видели в логе, что fe2b0000 стал mmc0
-        CURRENT_DEV="mmc0"
-    elif devinfo -v | grep -q "fe310000.mmc"; then
-        # Если загрузились с fe310000 (eMMC)
-        CURRENT_DEV="mmc1"
-    else
-        # Резервный вариант, если eMMC отвалилась и SD осталась единственной
-        CURRENT_DEV="mmc0"
-    fi
-fi
-
+# 1. Создаем точку монтирования
 mkdir -p /mnt/rootfs_a
 
-# Монтируем rootfs_a с правильного физического носителя
-mount /dev/${CURRENT_DEV}.rootfs_a /mnt/rootfs_a
+# 2. Монтируем rootfs_a строго с mmc0 (так как SD-карта определилась как mmc0)
+mount /dev/mmc0.rootfs_a /mnt/rootfs_a
 
-global.bootm.image=/mnt/rootfs_a/boot/Image.gz
-global.linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae rw rootwait"
+# 3. Назначаем переменные через команду global (БЕЗ использования знака '=' в начале строки)
+global bootm.image="/mnt/rootfs_a/boot/Image.gz"
+global linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae rw rootwait"
