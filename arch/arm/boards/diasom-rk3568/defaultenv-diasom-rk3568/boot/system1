@@ -1,10 +1,17 @@
 #!/bin/sh
 
+# Автоматически определяем имя текущего диска загрузки (mmc0 или mmc1)
+# На основе того, откуда стартанул сам загрузчик
 CURRENT_DEV="mmc${global.bootsource_instance}"
 
-mkdir -p /mnt/rootfs_a
-mount /dev/${CURRENT_DEV}.rootfs_a /mnt/rootfs_a
+mkdir -p /mnt/rootfs_b
 
-global.bootm.image=/mnt/rootfs_a/boot/Image.gz
-# Barebox сам передаст ядру внутреннее дерево устройств (Internal DTB)
+# Монтируем rootfs_b именно с того физического носителя, с которого мы сейчас загрузились!
+mount /dev/${CURRENT_DEV}.rootfs_b /mnt/rootfs_b
+
+# Загружаем ядро Linux
+global.bootm.image=/mnt/rootfs_b/boot/Image.gz
+
+# Передаем ядру Linux инструкцию искать корень по PARTUUID. 
+# Linux сам найдет этот раздел на нужном диске, даже если eMMC и SD поменяются индексами в ядре
 global.linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae rw rootwait"

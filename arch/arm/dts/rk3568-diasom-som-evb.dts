@@ -25,11 +25,21 @@
         mmc1 = &sdmmc1;
 	};
 
+	chosen {
+        /* ДИНАМИЧЕСКИЙ ПЕРЕХВАТ: */
+        /* Если BootROM запустил Barebox с eMMC (инстанс 0), 
+		bootsource связывается с eMMC */
+        barebox,bootsource-mmc0 = &sdhci;
+        /* Если BootROM запустил Barebox с SD-карты (инстанс 1), 
+		bootsource связывается с SD */
+        barebox,bootsource-mmc1 = &sdmmc0;
+    };
+
 	state_node: state {
         compatible = "barebox,state";
         magic = <0x4c726d63>;
         
-        backend = <&sdmmc0>; 
+        backend = <&sdhci>; 
         backend-type = "raw";
         
         backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
@@ -301,7 +311,9 @@
 
 &sdhci {
     status = "okay";
-    non-removable;
+	no-sdio;
+    no-sd;
+	non-removable;
     bus-width = <8>;
 };
 
