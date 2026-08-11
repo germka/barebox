@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# Создаем точку монтирования (ошибки скрывать не нужно, husher их пропустит)
-mkdir -p /mnt/rootfs_a
-mount /dev/mmc0.rootfs_a /mnt/rootfs_a
+CURRENT_DEV="mmc${global.bootsource_instance}"
 
-# Передаем параметры ядра
+mkdir -p /mnt/rootfs_a
+mount /dev/${CURRENT_DEV}.rootfs_a /mnt/rootfs_a
+
 global.bootm.image=/mnt/rootfs_a/boot/Image.gz
-global.bootm.oftree=/mnt/rootfs_a/boot/rk3568-diasom-som-evb.dtb
-global.linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae ro rootwait"
+# Barebox сам передаст ядру внутреннее дерево устройств (Internal DTB)
+global.linux.bootargs.dyn.root="root=PARTUUID=b921b045-1df0-41c3-af44-4c6f280d3fae rw rootwait"

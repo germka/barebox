@@ -29,7 +29,7 @@
         compatible = "barebox,state";
         magic = <0x4c726d63>;
         
-        backend = <&sdmmc0>; 
+        backend = <&sdmmc1>; 
         backend-type = "raw";
         
         backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
