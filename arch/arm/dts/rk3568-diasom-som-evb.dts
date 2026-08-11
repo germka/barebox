@@ -21,8 +21,8 @@
 		gpio5 = &pcf8574a;
 		rtc1 = &pcf85063;
 		state = &state_node;
-        // mmc0 = &sdmmc0; /* SD-карта (fe2b0000) */
-        // mmc1 = &sdhci;  /* eMMC (fe310000) */
+        mmc0 = &sdmmc0; /* SD-карта (fe2b0000) */
+        mmc1 = &sdhci;  /* eMMC (fe310000) */
 	};
 
 	chosen {
