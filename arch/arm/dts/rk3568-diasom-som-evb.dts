@@ -25,20 +25,14 @@
         mmc1 = &sdhci;  /* eMMC (fe310000) */
 	};
 
-    chosen {
-        /* Ищем файлы конфигурации /dev/env0 по имени раздела "env" на текущем диске */
-        environment = <&env_gpt_part>;
-    };
-
     state_node: state {
         compatible = "barebox,state";
         magic = <0x4c726d63>;
         
-        /* 1. Ссылаемся напрямую на весь контроллер SD-карты */
-        backend = <&state_gpt_part>; 
         backend-type = "raw";
-        
-         /* Плоская структура переменных для совместимости с Barebox 2025/2026 */
+        backend-guid = "4f68bce3-e8cd-4db1-96e7-fbcaf984b709";
+
+         /* Плоская структура переменных */
         bootstate {
             #address-cells = <1>;
             #size-cells = <1>;
@@ -321,14 +315,6 @@
     no-sd;
 	non-removable;
     bus-width = <8>;
-
-	partition@env {
-        label = "env";
-    };
-
-    partition@state {
-        label = "state";
-    };
 };
 
 &i2c1 {
@@ -484,15 +470,6 @@
 	cd-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_LOW>;
 	vmmc-supply = <&vcc3v3_sys>;
 	status = "okay";
-
-	/* Драйвер Barebox автоматически найдет на диске GPT-разделы с этими label */
-    env_gpt_part: partition@env {
-        label = "env";
-    };
-
-    state_gpt_part: partition@state {
-        label = "state";
-    };
 };
 
 &spi1 {
