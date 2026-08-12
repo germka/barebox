@@ -32,42 +32,37 @@
         compatible = "barebox,state";
         magic = <0x4c726d63>;
         
-        /* ССЫЛАЕМСЯ НА ФИКСИРОВАННЫЙ ПОДРАЗДЕЛ НИЖЕ */
-        backend = <&state_partition>;
+        /* 1. Ссылаемся напрямую на весь контроллер SD-карты */
+        backend = <&sdmmc0>; 
         backend-type = "raw";
+        
+        /* 2. Ищем раздел 'state' по его UUID типа в GPT */
+        backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
 
+        /* 3. КРИТИЧЕСКИЙ ФИКС СИНТАКСИСА: Плоская структура переменных */
         bootstate {
             #address-cells = <1>;
             #size-cells = <1>;
 
-            system0 {
-                #address-cells = <1>;
-                #size-cells = <1>;
-                remaining_attempts@0 {
-                    reg = <0x0 0x4>;
-                    type = "uint32";
-                    default = <3>;
-                };
-                priority@4 {
-                    reg = <0x4 0x4>;
-                    type = "uint32";
-                    default = <20>;
-                };
+            system0_remaining_attempts {
+                reg = <0x0 0x4>;
+                type = "uint32";
+                default = <3>;
             };
-
-            system1 {
-                #address-cells = <1>;
-                #size-cells = <1>;
-                remaining_attempts@8 {
-                    reg = <0x8 0x4>;
-                    type = "uint32";
-                    default = <3>;
-                };
-                priority@c {
-                    reg = <0xc 0x4>;
-                    type = "uint32";
-                    default = <10>;
-                };
+            system0_priority {
+                reg = <0x4 0x4>;
+                type = "uint32";
+                default = <20>;
+            };
+            system1_remaining_attempts {
+                reg = <0x8 0x4>;
+                type = "uint32";
+                default = <3>;
+            };
+            system1_priority {
+                reg = <0xc 0x4>;
+                type = "uint32";
+                default = <10>;
             };
         };
     };
@@ -482,25 +477,6 @@
 	cd-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_LOW>;
 	vmmc-supply = <&vcc3v3_sys>;
 	status = "okay";
-
-	/* ЯВНО ОПИСЫВАЕМ СЕКТОРА ДИСКА ДЛЯ ДРАЙВЕРА STATE */
-    partitions {
-        compatible = "fixed-partitions";
-        #address-cells = <1>;
-        #size-cells = <1>;
-
-        /* Смещение под env (обычно после загрузчика) */
-        environment_partition: partition@200000 {
-            label = "env";
-            reg = <0x200000 0x100000>; /* Смещение 2МБ, размер 1МБ */
-        };
-
-        /* Вот этот узел и его метка (&state_partition) нам нужны! */
-        state_partition: partition@300000 {
-            label = "state";
-            reg = <0x300000 0x100000>; /* Смещение 3МБ, размер 1МБ */
-        };
-    };
 };
 
 &spi1 {
