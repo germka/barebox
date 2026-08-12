@@ -28,15 +28,13 @@
 	chosen {
     };
 
-	state_node: state {
+    state_node: state {
         compatible = "barebox,state";
         magic = <0x4c726d63>;
-        backend = <&sdmmc0>; 
-        backend-type = "raw"; /* Возвращаем стабильный raw */
-        backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
         
-        /* КРИТИЧЕСКИЙ ФИКС ДЛЯ BAREBOX 2025: Явно задаем формат хранения */
-        format = "dtb"; 
+        /* ССЫЛАЕМСЯ НА ФИКСИРОВАННЫЙ ПОДРАЗДЕЛ НИЖЕ */
+        backend = <&state_partition>;
+        backend-type = "raw";
 
         bootstate {
             #address-cells = <1>;
@@ -484,6 +482,25 @@
 	cd-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_LOW>;
 	vmmc-supply = <&vcc3v3_sys>;
 	status = "okay";
+
+	/* ЯВНО ОПИСЫВАЕМ СЕКТОРА ДИСКА ДЛЯ ДРАЙВЕРА STATE */
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        /* Смещение под env (обычно после загрузчика) */
+        environment_partition: partition@200000 {
+            label = "env";
+            reg = <0x200000 0x100000>; /* Смещение 2МБ, размер 1МБ */
+        };
+
+        /* Вот этот узел и его метка (&state_partition) нам нужны! */
+        state_partition: partition@300000 {
+            label = "state";
+            reg = <0x300000 0x100000>; /* Смещение 3МБ, размер 1МБ */
+        };
+    };
 };
 
 &spi1 {
