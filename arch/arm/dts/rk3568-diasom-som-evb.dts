@@ -31,28 +31,49 @@
 	state_node: state {
         compatible = "barebox,state";
         magic = <0x4c726d63>;
-        
         backend = <&sdmmc0>; 
-        backend-type = "circular";
+        backend-type = "raw"; /* В связке с GPT partuuid используем тип raw */
 
-        backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
+        backend-storage-hints {
+            partuuid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
+        };
 
         bootstate {
             #address-cells = <1>;
             #size-cells = <1>;
 
             system0 {
-                reg = <0x0 0x10>;
-                type = "uint32";
-                default = <20>; /* Стартовый приоритет */
-                default_remaining_attempts = <3>; /* Стартовое число попыток */
+                #address-cells = <1>;
+                #size-cells = <1>;
+                
+                /* ВНУТРЕННЯЯ СТРУКТУРА ПЕРЕМЕННЫХ СЛОТА А */
+                remaining_attempts@0 {
+                    reg = <0x0 0x4>;
+                    type = "uint32";
+                    default = <3>;
+                };
+                priority@4 {
+                    reg = <0x4 0x4>;
+                    type = "uint32";
+                    default = <20>;
+                };
             };
 
             system1 {
-                reg = <0x10 0x10>;
-                type = "uint32";
-                default = <10>;
-                default_remaining_attempts = <3>;
+                #address-cells = <1>;
+                #size-cells = <1>;
+                
+                /* ВНУТРЕННЯЯ СТРУКТУРА ПЕРЕМЕННЫХ СЛОТА Б */
+                remaining_attempts@8 {
+                    reg = <0x8 0x4>;
+                    type = "uint32";
+                    default = <3>;
+                };
+                priority@c {
+                    reg = <0xc 0x4>;
+                    type = "uint32";
+                    default = <10>;
+                };
             };
         };
     };
