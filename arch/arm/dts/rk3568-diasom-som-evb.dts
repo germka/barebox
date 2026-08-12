@@ -32,11 +32,11 @@
         compatible = "barebox,state";
         magic = <0x4c726d63>;
         backend = <&sdmmc0>; 
-        backend-type = "raw"; /* В связке с GPT partuuid используем тип raw */
-
-        backend-storage-hints {
-            partuuid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
-        };
+        backend-type = "raw"; /* Возвращаем стабильный raw */
+        backend-guid = "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f";
+        
+        /* КРИТИЧЕСКИЙ ФИКС ДЛЯ BAREBOX 2025: Явно задаем формат хранения */
+        format = "dtb"; 
 
         bootstate {
             #address-cells = <1>;
@@ -45,8 +45,6 @@
             system0 {
                 #address-cells = <1>;
                 #size-cells = <1>;
-                
-                /* ВНУТРЕННЯЯ СТРУКТУРА ПЕРЕМЕННЫХ СЛОТА А */
                 remaining_attempts@0 {
                     reg = <0x0 0x4>;
                     type = "uint32";
@@ -62,8 +60,6 @@
             system1 {
                 #address-cells = <1>;
                 #size-cells = <1>;
-                
-                /* ВНУТРЕННЯЯ СТРУКТУРА ПЕРЕМЕННЫХ СЛОТА Б */
                 remaining_attempts@8 {
                     reg = <0x8 0x4>;
                     type = "uint32";
