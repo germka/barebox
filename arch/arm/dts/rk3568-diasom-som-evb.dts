@@ -29,9 +29,11 @@
         compatible = "barebox,state";
         magic = <0x4c726d63>;
         
-        backend-type = "raw";
         backend = <&sdmmc0>;
-		backend-guid = "4f68bce3-e8cd-4db1-96e7-fbcaf984b709";
+		backend-type = "direct";           /* вместо raw */
+    	backend-offset = <0x388000>;       /* смещение до раздела state на SD (7232 сектора * 512) */
+        // backend-type = "raw";
+		// backend-guid = "4f68bce3-e8cd-4db1-96e7-fbcaf984b709";
 
          /* Плоская структура переменных */
         bootstate {
