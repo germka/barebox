@@ -34,32 +34,40 @@
 		backend-stridesize = <32>;
 		// backend-guid = "4778ed65-bf42-45fa-9c5b-287a1dc4aab1";
 
-         /* Плоская структура переменных */
-        bootstate {
-            #address-cells = <1>;
-            #size-cells = <1>;
+        bootchooser {
+			#address-cells = <1>;
+			#size-cells = <1>;
 
-            system0_remaining_attempts {
-                reg = <0x0 0x4>;
-                type = "uint32";
-                default = <3>;
-            };
-            system0_priority {
-                reg = <0x4 0x4>;
-                type = "uint32";
-                default = <20>;
-            };
-            system1_remaining_attempts {
-                reg = <0x8 0x4>;
-                type = "uint32";
-                default = <3>;
-            };
-            system1_priority {
-                reg = <0xc 0x4>;
-                type = "uint32";
-                default = <10>;
-            };
-        };
+			system0 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				remaining_attempts {
+					reg = <0x0 0x4>;
+					type = "uint32";
+					default = <3>;
+				};
+				priority {
+					reg = <0x4 0x4>;
+					type = "uint32";
+					default = <20>;
+				};
+			};
+
+			system1 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				remaining_attempts {
+					reg = <0x8 0x4>;
+					type = "uint32";
+					default = <3>;
+				};
+				priority {
+					reg = <0xc 0x4>;
+					type = "uint32";
+					default = <10>;
+				};
+			};
+		};
     };
 
 	clk25m: clk25m {
