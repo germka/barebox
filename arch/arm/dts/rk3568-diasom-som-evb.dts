@@ -31,8 +31,7 @@
         
         backend-type = "raw";
         backend = <&sdmmc0>;
-		stridesize = <0x1000>;          /* 4 КБ – типичный размер страницы */
-    	storage-size = <0x100000>;      /* 1 МБ – размер раздела state */
+		backend-stridesize = <32>;
 		// backend-guid = "4778ed65-bf42-45fa-9c5b-287a1dc4aab1";
 
          /* Плоская структура переменных */
