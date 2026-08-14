@@ -25,12 +25,6 @@
         mmc1 = &sdhci;  /* eMMC (fe310000) */
 	};
 
-	chosen {
-		bootchooser {
-			state-prefix = "state";
-		};
-	};
-	
     state_node: state {
         compatible = "barebox,state";
         magic = <0x4c726d63>;
@@ -42,39 +36,41 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 
-		system0 {
-			#address-cells = <1>;
-			#size-cells = <1>;
-			remaining_attempts@0 {
-				reg = <0x0 0x4>;
-				type = "uint32";
-				default = <3>;
+		bootstate {
+			system0 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				remaining_attempts@0 {
+					reg = <0x0 0x4>;
+					type = "uint32";
+					default = <3>;
+				};
+				priority@4 {
+					reg = <0x4 0x4>;
+					type = "uint32";
+					default = <20>;
+				};
 			};
-			priority@4 {
-				reg = <0x4 0x4>;
-				type = "uint32";
-				default = <20>;
-			};
-		};
 
-		system1 {
-			#address-cells = <1>;
-			#size-cells = <1>;
-			remaining_attempts@8 {
-				reg = <0x8 0x4>;
-				type = "uint32";
-				default = <3>;
+			system1 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				remaining_attempts@8 {
+					reg = <0x8 0x4>;
+					type = "uint32";
+					default = <3>;
+				};
+				priority@c {
+					reg = <0xc 0x4>;
+					type = "uint32";
+					default = <10>;
+				};
 			};
-			priority@c {
-				reg = <0xc 0x4>;
-				type = "uint32";
-				default = <10>;
-			};
-		};
 
-		last_chosen@10 {
-			reg = <0x10 0x4>;
-			type = "uint32";
+			last_chosen@10 {
+				reg = <0x10 0x4>;
+				type = "uint32";
+			};
 		};
     };
 
