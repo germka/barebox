@@ -31,7 +31,7 @@
         
         backend-type = "raw";
         backend = <&sdmmc0>;
-		backend-stridesize = <32>;
+		backend-stridesize = <20>;
 
 		#address-cells = <1>;
 		#size-cells = <1>;
