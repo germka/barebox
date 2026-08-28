@@ -377,24 +377,20 @@
 			"PWR good",
 			"PWR fault",
 			"CAP fault";
+		status = "okay";
 	};
 
-	pcf85063: rtc@32 {
-		compatible = "nxp,pcf85063";
+	ins5699s: rtc@32 {
+		compatible = "epson,rx8025";
 		reg = <0x32>;
-		quartz-load-femtofarads = <12500>;
-
-		clock {
-			compatible = "fixed-clock";
-			#clock-cells = <0>;
-			clock-frequency = <32768>;
-		};
+		status = "okay";
 	};
 
 	eeprom@50 {
 		compatible = "atmel,24c512";
 		reg = <0x50>;
 		pagesize = <128>;
+		status = "okay";
 	};
 };
 
