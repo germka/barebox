@@ -19,7 +19,7 @@
 		ethernet0 = &gmac0;
 		ethernet1 = &gmac1;
 		gpio5 = &pcf8574a;
-		rtc1 = &pcf85063;
+		rtc1 = &ins5699s;
 		state = &state_node;
         mmc0 = &sdmmc0; /* SD-карта (fe2b0000) */
         mmc1 = &sdhci;  /* eMMC (fe310000) */
@@ -381,7 +381,7 @@
 	};
 
 	ins5699s: rtc@32 {
-		compatible = "epson,rx8025";
+		compatible = "epson,rx8581";
 		reg = <0x32>;
 		status = "okay";
 	};
