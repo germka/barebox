@@ -361,7 +361,6 @@
 	pcf8574a: gpio5@38 {
 		compatible = "nxp,pcf8574a";
 		reg = <0x38>;
-		gpio-ranges = <&pinctrl 0 160 8>;
 		interrupt-parent = <&irqpin2>;
 		interrupts = <3 0>;
 		gpio-controller;
