@@ -367,15 +367,6 @@
 		#gpio-cells = <2>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
-		gpio-line-names =
-			"DI-1",
-			"DI-2",
-			"DI-3",
-			"DI-4",
-			"CAP good",
-			"PWR good",
-			"PWR fault",
-			"CAP fault";
 		status = "okay";
 	};
 
@@ -764,5 +755,75 @@
 		gpios = <20 2>;	// line number in gpio port (not global)
 		output-high;
 		line-name = "en-buffer";
+	};
+};
+
+&pcf8574a {
+	status = "okay";
+	gpio-line-names =
+		"DI-1",
+		"DI-2",
+		"DI-3",
+		"DI-4",
+		"CAP good",
+		"PWR good",
+		"PWR fault",
+		"CAP fault";
+
+	di1-hog {
+		gpio-hog;
+		gpios = <0 0>;
+		input;
+		line-name = "DI-1";
+	};
+
+	di2-hog {
+		gpio-hog;
+		gpios = <1 0>;
+		input;
+		line-name = "DI-2";
+	};
+
+	di3-hog {
+		gpio-hog;
+		gpios = <2 0>;
+		input;
+		line-name = "DI-3";
+	};
+
+	di4-hog {
+		gpio-hog;
+		gpios = <3 0>;
+		input;
+		line-name = "DI-4";
+	};
+
+	cap-good-hog {
+		gpio-hog;
+		gpios = <4 0>;
+		input;
+		line-name = "CAP good";
+	};
+
+	pwr-good-hog {
+		gpio-hog;
+		gpios = <5 0>;
+		input;
+		line-name = "PWR good";
+	};
+
+	pwr-fault-hog {
+		gpio-hog;
+		gpios = <6 0>;
+		input;
+		line-name = "PWR fault";
+	};
+
+
+	cap-fault-hog {
+		gpio-hog;
+		gpios = <7 0>;
+		input;
+		line-name = "CAP fault";
 	};
 };
