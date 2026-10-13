@@ -7,7 +7,7 @@
 
 #include "rk3568-diasom-som.dtsi"
 
-#define USBOTG_HOST
+// #define USBOTG_HOST
 
 / {
 	model = "Diasom DS-RK3568-SOM-EVB";
@@ -342,17 +342,17 @@
 /*
 	pinctrl-1 = <&i2c4m0_gpio>;
 	pinctrl-names = "default", "recovery";
-    recovery-gpios = <&gpio4 RK_PB2 GPIO_ACTIVE_HIGH>,
-                     <&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
+	recovery-gpios = <&gpio4 RK_PB2 GPIO_ACTIVE_HIGH>,
+			<&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
  */
 	resets = <&cru SRST_I2C4>;
     	reset-names = "i2c";
 /*
 	i2c-scl-rising-time-ns = <200>;
-    i2c-scl-falling-time-ns = <200>;
-    i2c-sda-holding-time-ns = <200>;
-    retries = <3>;
-    timeout-ms = <1000>;
+	i2c-scl-falling-time-ns = <200>;
+	i2c-sda-holding-time-ns = <200>;
+	retries = <3>;
+	timeout-ms = <1000>;
  */
 	clock-frequency = <100000>;
 	multi-master;
@@ -367,6 +367,7 @@
 		#gpio-cells = <2>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
+		lines-initial-states = <0x00>;	// Бит 0 = линия настроена как вход
 		status = "okay";
 	};
 
@@ -626,7 +627,7 @@
 	pcie20 {
 		pcie20_pins: pcie20-pins {
 			rockchip,pins =
-				<2 RK_PD0 4 &pcfg_pull_none>,			/* PCIE20_CLKREQn_M1 */
+				// <2 RK_PD0 4 &pcfg_pull_none>,			/* PCIE20_CLKREQn_M1 */
 				<2 RK_PD1 4 &pcfg_pull_none>,			/* PCIE20_WAKEn_M1 */
 				<1 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;	/* PCIE20_PERST */
 		};
@@ -645,9 +646,19 @@
 				<3 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;		/* PCIE30_PWREN */
 		};
 	};
-};
 
-&pinctrl {
+	do-1 {
+		output_pin_do1: output-pin-do1 {
+        		rockchip,pins = <2 RK_PD0 RK_FUNC_GPIO &pcfg_output_low>;
+		};
+    	};
+
+	do-2 {
+		output_pin_do2: output-pin-do2 {
+        		rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_output_low>;
+		};
+    	};
+
 	usb_reset {
 		mdm_reset_pin: mdm-reset-pin {
 			/*
@@ -666,7 +677,12 @@
 };
 
 &gpio0 {
-	gpio-line-names = "","","","","","","","","","","","mdm-enable","","","","","","","","","","","","","","","","","","","","";
+	pinctrl-names = "default";
+    	pinctrl-0 = <&output_pin_do2>;
+    	gpio-line-names = "do-2","","","","","","","",
+			"","","","mdm-enable","","","","",
+			"","","","","","","","",
+			"","","","","","","","";
 	 
 	// mdm-enable {
 	// 	gpio-hog;
@@ -674,11 +690,19 @@
 	// 	output-low;
 	// 	line-name = "mdm-enable";
 	// };
+	/* Освобождено для управления из системы
+	do-2-hog {
+		gpio-hog;
+		gpios = <RK_PA0 GPIO_ACTIVE_HIGH>;
+		output-low;
+		line-name = "DO-2";
+	};
+	*/
 };
 
 &gpio1 {
 	pinctrl-0 = <&mdm_reset_pin>;
-    pinctrl-names = "default";
+    	pinctrl-names = "default";
 
 	compatible = "rockchip,gpio-bank";
 	reg = <0x0 0xfe740000 0x0 0x100>;
@@ -689,24 +713,26 @@
 	#gpio-cells = <2>;
 	interrupt-controller;
 	#interrupt-cells = <2>;
-	gpio-line-names = "","hub-reset","","mdm-reset","","wl-enable","","","","pps-out","","","","","","","","","","","","","","","","","","","","","","";
-	/*
-	line_pps {
+	gpio-line-names = "","hub-reset","","mdm-reset","","wl-enable","","",
+			"","pps-out","","","","","","",
+			"","","","","","","","",
+			"","","","","","","","";
+	/* Освобождено для управления из системы
+	line-pps-hog {
 		gpio-hog;
 		gpios = <9 2>;	// line number in gpio port (not global)
 		output-high;
 		line-name = "pps-out";
 	};
-	 */
-	 
-	// mdm-reset {
+	*/	 
+	// mdm-reset-hog {
 	// 	gpio-hog;
 	// 	gpios = <3 2>;	// line number in gpio port (not global)
 	// 	output-low;
 	// 	line-name = "mdm-reset";
 	// };
 
-	wl-enable {
+	wl-enable-hog {
 		gpio-hog;
 		gpios = <5 2>;	// line number in gpio port (not global)
 		output-high;
@@ -724,20 +750,34 @@
 	#gpio-cells = <2>;
 	interrupt-controller;
 	#interrupt-cells = <2>;
-	gpio-line-names = "","","","","","","","","","","","","","","","","","","","","","","","","","","","","bt-enable","buff-enable","","";
+	pinctrl-names = "default";
+	pinctrl-0 = <&output_pin_do1>;
+	gpio-line-names = "","","","","","","","",
+			"","","","","","","","",
+			"","","","","","","","",
+			"do-1","","","","bt-enable","buff-enable","","";
 
-	bt-enable {
+	bt-enable-hog {
 		gpio-hog;
 		gpios = <28 2>;	// line number in gpio port (not global)
 		output-high;
 		line-name = "bt-enable";
 	};
-	buff-enable {
+	
+	buff-enable-hog {
 		gpio-hog;
-		gpios = <29 2>;	// line number in gpio port (not global)
+		gpios = <29 2>;	// line number in gpio port (not global) GPIO2_D5
 		output-high;
 		line-name = "buff-enable";
 	};
+	/* Освобождено для управления из системы
+	do-1-hog {
+		gpio-hog;
+		gpios = <RK_PD0 GPIO_ACTIVE_HIGH>;
+		output-low;
+		line-name = "DO-1";
+	};
+	*/
 };
 
 &gpio4 {
@@ -750,26 +790,21 @@
 	#gpio-cells = <2>;
 	interrupt-controller;
 	#interrupt-cells = <2>;
-	line_en-buff {
+	/* ??
+	en-buff-hog {
 		gpio-hog;
 		gpios = <20 2>;	// line number in gpio port (not global)
 		output-high;
 		line-name = "en-buffer";
 	};
+	*/
 };
 
 &pcf8574a {
 	status = "okay";
-	gpio-line-names =
-		"DI-1",
-		"DI-2",
-		"DI-3",
-		"DI-4",
-		"CAP good",
-		"PWR good",
-		"PWR fault",
-		"CAP fault";
-
+	gpio-line-names = "di-1","di-2","di-3","di-4",
+			"CAP good","PWR good","PWR fault","CAP fault";
+	/* Освобождено для управления из системы
 	di1-hog {
 		gpio-hog;
 		gpios = <0 0>;
@@ -819,11 +854,11 @@
 		line-name = "PWR fault";
 	};
 
-
 	cap-fault-hog {
 		gpio-hog;
 		gpios = <7 0>;
 		input;
 		line-name = "CAP fault";
 	};
+	*/
 };
