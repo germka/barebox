@@ -212,10 +212,6 @@
     status = "okay";
 };
 
-&usb_host0_ehci {
-    status = "okay";
-};
-
 /* === КОНТРОЛЛЕР МОДЕМА (Использует xHCI 1 + половину PHY0_HOST) === */
 &usb_host1_xhci {
 	dr_mode = "host";
@@ -319,16 +315,21 @@
 	phy-supply = <&vcc3v3_sys>;
 };
 
+&vdd_gpu {
+	status = "disabled";
+};
+
 &gpu {
-	status = "okay";
+	// status = "okay";
+	status = "disabled";
 };
 
 &sdhci {
-    status = "okay";
+	status = "okay";
 	no-sdio;
-    no-sd;
+	no-sd;
 	non-removable;
-    bus-width = <8>;
+	bus-width = <8>;
 };
 
 &i2c1 {
@@ -503,6 +504,7 @@
 // Slot-1
 &uart5 {
 	/delete-property/ dmas;
+	/delete-property/ dma-names;
 	pinctrl-0 = <&uart5m1_xfer>;
 	status = "okay";
 };
@@ -510,13 +512,31 @@
 // Slot-2
 &uart3 {
 	/delete-property/ dmas;
+	/delete-property/ dma-names;
 	pinctrl-0 = <&uart3m1_xfer>;
+	status = "okay";
+};
+
+// Slot-3
+&uart9 {
+	/delete-property/ dmas;
+	/delete-property/ dma-names;
+	pinctrl-0 = <&uart9m1_xfer>;
+	status = "okay";
+};
+
+// Slot-4	// TODO: Fix levels
+&uart4 {
+	/delete-property/ dmas;
+	/delete-property/ dma-names;
+	pinctrl-0 = <&uart4m0_xfer>;
 	status = "okay";
 };
 
 // Slot-5 485-1
 &uart7 {
 	/delete-property/ dmas;
+	/delete-property/ dma-names;
 	pinctrl-0 = <&uart7m1_xfer &uart7m0_ctsn &uart7m0_rtsn>;
 	linux,rs485-enabled-at-boot-time;
 	rs485-rts-active-low;
@@ -527,24 +547,11 @@
 // Slot-6 485-2
 &uart8 {
 	/delete-property/ dmas;
+	/delete-property/ dma-names;
 	pinctrl-0 = <&uart8m0_xfer &uart8m0_ctsn &uart8m0_rtsn>;
 	linux,rs485-enabled-at-boot-time;
 	rs485-rts-active-low;
 	uart-has-rtscts;
-	status = "okay";
-};
-
-// Slot-3
-&uart9 {
-	/delete-property/ dmas;
-	pinctrl-0 = <&uart9m1_xfer>;
-	status = "okay";
-};
-
-// Slot-4	// TODO: Fix levels
-&uart4 {
-	/delete-property/ dmas;
-	pinctrl-0 = <&uart4m0_xfer>;
 	status = "okay";
 };
 

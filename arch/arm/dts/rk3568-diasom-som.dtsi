@@ -119,71 +119,79 @@
 			linux,default-trigger = LED_FUNCTION_ACTIVITY;
 			default-state = "off";
 		};
-		// Конфликт с питанием USB
-		// som-led-1 {
-		// 	label = "led:1";
-		// 	gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
-		// 	linux,default-trigger = LED_FUNCTION_HEARTBEAT;
-		// 	function = LED_FUNCTION_HEARTBEAT;
-		// 	default-state = "on";
-		// };
 
-		som-led-2 {
-			label = "led:2";
-			gpios = <&gpio0 RK_PB6 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
-			function = LED_FUNCTION_HEARTBEAT;
-			default-state = "on";
-		};
-
-		som-led-3 {
-			label = "led:3";
-			gpios = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
-			function = LED_FUNCTION_HEARTBEAT;
-			default-state = "on";
-		};
-
-		som-led-4 {
-			label = "led:4";
-			gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
-			function = LED_FUNCTION_HEARTBEAT;
-			default-state = "on";
-		};
-
-		som-led-5 {
-			label = "led:5";
-			gpios = <&gpio4 RK_PB5 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
-			function = LED_FUNCTION_HEARTBEAT;
-			default-state = "on";
-		};
-
-		som-led-6 {
-			label = "led:6";
-			gpios = <&gpio1 RK_PB0 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
-			function = LED_FUNCTION_HEARTBEAT;
-			default-state = "on";
-		};
-
-		som-led-7 {
-			label = "led:7";
+		som-led-1-1 {
+			label = "led:1-1";	// 1 зеленый
 			gpios = <&gpio3 RK_PA1 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			color = <LED_COLOR_ID_GREEN>;
 			function = LED_FUNCTION_HEARTBEAT;
-			default-state = "on";
+			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			default-state = "off";
 		};
-/*		Занимает пин включения USB модема (почему?)
-		som-led-8 {
-			label = "led:8";
+
+		som-led-1-2 {
+			label = "led:1-2";	// 1 красный
+			gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_HEARTBEAT;
+			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			default-state = "off";
+		};
+
+		som-led-2-1 {
+			label = "led:2-1";	// 2 зеленый
+			gpios = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_HEARTBEAT;
+			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			default-state = "off";
+		};
+
+		som-led-2-2 {
+			label = "led:2-2";	// 2 красный
+			gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_HEARTBEAT;
+			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			default-state = "off";
+		};
+
+		som-led-3-1 {
+			label = "led:3-1";	// 3 зеленый
+			gpios = <&gpio1 RK_PB0 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_HEARTBEAT;
+			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			default-state = "off";
+		};
+
+		som-led-3-2 {
+			label = "led:3-2";	// 3 красный
+			gpios = <&gpio4 RK_PB5 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_HEARTBEAT;
+			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			default-state = "off";
+		};
+
+		// Занимает пин включения USB модема (почему?)
+		som-led-4-1 {
+			label = "led:4-1";	// 4 зеленый
 			gpios = <&gpio0 RK_PB3 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			color = <LED_COLOR_ID_GREEN>;
 			function = LED_FUNCTION_HEARTBEAT;
-			default-state = "on";
+			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			default-state = "off";
 		};
- */
+
+		som-led-4-2 {
+			label = "led:4-2";	// 4 красный
+			gpios = <&gpio0 RK_PB6 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_HEARTBEAT;
+			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			default-state = "off";
+		};
 	};
 /*
 	pps {
@@ -243,11 +251,13 @@
 
 &gpu {
 	mali-supply = <&vdd_gpu>;
+	status = "disabled";
 };
 
 &hdmi {
 	avdd-0v9-supply = <&vdda0v9_image>;
 	avdd-1v8-supply = <&vcca1v8_image>;
+	status = "disabled";
 };
 
 &hdmi_sound {
@@ -562,12 +572,14 @@
 	status = "okay";
 };
 
+/* platform fd800000.usb: deferred probe pending: (reason unknown)
 &usb_host0_ehci {
 	dr_mode = "host";
 	hnp-disable;
 	srp-disable;
 	status = "okay";
 };
+*/
 
 &usb_host0_ohci {
 	dr_mode = "host";
@@ -650,16 +662,16 @@
 	leds {
 		leds_pins: leds-pins {
 			rockchip,pins =
-				<0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED1 */
-				<0 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED2 */
-				// <1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 1*/
-				<0 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 2*/
-				<0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 3*/
-				<0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 4*/
-				<4 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 5*/
-				<1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 6*/
-				<3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;	/* LED 7*/
-				// <0 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;	/* LED 8*/
+				<0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>,	/* SOM LED1 */
+				<0 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>,	/* SOM LED2 */
+				<3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 1 GREEN*/
+				<1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 1 RED*/
+				<0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 2 GREEN*/
+				<0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 2 RED*/
+				<1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 3 GREEN*/
+				<4 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 3 RED*/
+				<0 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>,	/* LED 4 GREEN*/
+				<0 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;	/* LED 4 RED*/
 		};
 	};
 
