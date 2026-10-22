@@ -174,7 +174,6 @@
 			default-state = "off";
 		};
 
-		// Занимает пин включения USB модема (почему?)
 		som-led-4-1 {
 			label = "led:4-1";	// 4 зеленый
 			gpios = <&gpio0 RK_PB3 GPIO_ACTIVE_HIGH>;

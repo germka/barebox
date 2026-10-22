@@ -687,17 +687,17 @@
 	pinctrl-names = "default";
     	pinctrl-0 = <&output_pin_do2>;
     	gpio-line-names = "do-2","","","","","","","",
-			"","","","mdm-enable","","","","",
+			"","","","","mdm-enable","","","",
 			"","","","","","","","",
 			"","","","","","","","";
 	 
-	// mdm-enable {
-	// 	gpio-hog;
-	// 	gpios = <11 2>;	// line number in gpio port (not global)
-	// 	output-low;
-	// 	line-name = "mdm-enable";
-	// };
 	/* Освобождено для управления из системы
+	mdm-enable-hog {
+		gpio-hog;
+		gpios = <RK_PB4 GPIO_ACTIVE_HIGH>;
+		output-low;
+		line-name = "mdm-enable-hog";
+	};
 	do-2-hog {
 		gpio-hog;
 		gpios = <RK_PA0 GPIO_ACTIVE_HIGH>;
