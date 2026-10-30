@@ -297,6 +297,8 @@
 	clock_in_out = "output";
 	phy-handle = <&rgmii_phy0>;
 	phy-mode = "rgmii-id";
+	tx_delay = <0x3c>;
+    	rx_delay = <0x2f>;
 	phy-supply = <&vcc3v3_sys>;
 };
 
@@ -312,6 +314,8 @@
 	clock_in_out = "output";
 	phy-handle = <&rgmii_phy1>;
 	phy-mode = "rgmii-id";
+	tx_delay = <0x3c>;
+    	rx_delay = <0x2f>;
 	phy-supply = <&vcc3v3_sys>;
 };
 
