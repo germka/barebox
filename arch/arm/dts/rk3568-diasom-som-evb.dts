@@ -508,7 +508,8 @@
 // Slot-1
 &uart5 {
 	/delete-property/ dmas;
-	/delete-property/ dma-names;
+	// /delete-property/ dma-names;
+	dma-names = "!tx", "!rx";
 	pinctrl-0 = <&uart5m1_xfer>;
 	status = "okay";
 };
@@ -516,7 +517,8 @@
 // Slot-2
 &uart3 {
 	/delete-property/ dmas;
-	/delete-property/ dma-names;
+	// /delete-property/ dma-names;
+	dma-names = "!tx", "!rx";
 	pinctrl-0 = <&uart3m1_xfer>;
 	status = "okay";
 };
@@ -524,15 +526,17 @@
 // Slot-3
 &uart9 {
 	/delete-property/ dmas;
-	/delete-property/ dma-names;
+	// /delete-property/ dma-names;
+	dma-names = "!tx", "!rx";
 	pinctrl-0 = <&uart9m1_xfer>;
 	status = "okay";
 };
 
-// Slot-4	// TODO: Fix levels
+// Slot-4
 &uart4 {
 	/delete-property/ dmas;
-	/delete-property/ dma-names;
+	// /delete-property/ dma-names;
+	dma-names = "!tx", "!rx";
 	pinctrl-0 = <&uart4m0_xfer>;
 	status = "okay";
 };
@@ -540,7 +544,8 @@
 // Slot-5 485-1
 &uart7 {
 	/delete-property/ dmas;
-	/delete-property/ dma-names;
+	// /delete-property/ dma-names;
+	dma-names = "!tx", "!rx";
 	pinctrl-0 = <&uart7m1_xfer &uart7m0_ctsn &uart7m0_rtsn>;
 	linux,rs485-enabled-at-boot-time;
 	rs485-rts-active-low;
@@ -551,7 +556,8 @@
 // Slot-6 485-2
 &uart8 {
 	/delete-property/ dmas;
-	/delete-property/ dma-names;
+	// /delete-property/ dma-names;
+	dma-names = "!tx", "!rx";
 	pinctrl-0 = <&uart8m0_xfer &uart8m0_ctsn &uart8m0_rtsn>;
 	linux,rs485-enabled-at-boot-time;
 	rs485-rts-active-low;
