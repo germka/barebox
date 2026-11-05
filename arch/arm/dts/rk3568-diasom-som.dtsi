@@ -124,8 +124,8 @@
 			label = "led:1-1";	// 1 зеленый
 			gpios = <&gpio3 RK_PA1 GPIO_ACTIVE_HIGH>;
 			color = <LED_COLOR_ID_GREEN>;
-			function = LED_FUNCTION_HEARTBEAT;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			// function = LED_FUNCTION_HEARTBEAT;
+			// linux,default-trigger = LED_FUNCTION_HEARTBEAT;
 			default-state = "off";
 		};
 
@@ -133,8 +133,8 @@
 			label = "led:1-2";	// 1 красный
 			gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
 			color = <LED_COLOR_ID_RED>;
-			function = LED_FUNCTION_HEARTBEAT;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			// function = LED_FUNCTION_HEARTBEAT;
+			// linux,default-trigger = LED_FUNCTION_HEARTBEAT;
 			default-state = "off";
 		};
 
@@ -142,8 +142,8 @@
 			label = "led:2-1";	// 2 зеленый
 			gpios = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
 			color = <LED_COLOR_ID_GREEN>;
-			function = LED_FUNCTION_HEARTBEAT;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			// function = LED_FUNCTION_HEARTBEAT;
+			// linux,default-trigger = LED_FUNCTION_HEARTBEAT;
 			default-state = "off";
 		};
 
@@ -151,8 +151,8 @@
 			label = "led:2-2";	// 2 красный
 			gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
 			color = <LED_COLOR_ID_RED>;
-			function = LED_FUNCTION_HEARTBEAT;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			// function = LED_FUNCTION_HEARTBEAT;
+			// linux,default-trigger = LED_FUNCTION_HEARTBEAT;
 			default-state = "off";
 		};
 
@@ -160,8 +160,8 @@
 			label = "led:3-1";	// 3 зеленый
 			gpios = <&gpio1 RK_PB0 GPIO_ACTIVE_HIGH>;
 			color = <LED_COLOR_ID_GREEN>;
-			function = LED_FUNCTION_HEARTBEAT;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			// function = LED_FUNCTION_HEARTBEAT;
+			// linux,default-trigger = LED_FUNCTION_HEARTBEAT;
 			default-state = "off";
 		};
 
@@ -169,8 +169,8 @@
 			label = "led:3-2";	// 3 красный
 			gpios = <&gpio4 RK_PB5 GPIO_ACTIVE_HIGH>;
 			color = <LED_COLOR_ID_RED>;
-			function = LED_FUNCTION_HEARTBEAT;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			// function = LED_FUNCTION_HEARTBEAT;
+			// linux,default-trigger = LED_FUNCTION_HEARTBEAT;
 			default-state = "off";
 		};
 
@@ -187,8 +187,8 @@
 			label = "led:4-2";	// 4 красный
 			gpios = <&gpio0 RK_PB6 GPIO_ACTIVE_HIGH>;
 			color = <LED_COLOR_ID_RED>;
-			function = LED_FUNCTION_HEARTBEAT;
-			linux,default-trigger = LED_FUNCTION_HEARTBEAT;
+			// function = LED_FUNCTION_HEARTBEAT;
+			// linux,default-trigger = LED_FUNCTION_HEARTBEAT;
 			default-state = "off";
 		};
 	};
